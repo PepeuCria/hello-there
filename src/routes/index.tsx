@@ -30,19 +30,40 @@ function Index() {
   const [screen, setScreen] = useState<"problems" | "quiz">("problems");
   const [animKey, setAnimKey] = useState(0);
   const [question, setQuestion] = useState(0);
+  const [quizQuestions, setQuizQuestions] = useState(questions);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [quizError, setQuizError] = useState("");
   const [answers, setAnswers] = useState<number[]>([]);
   const [done, setDone] = useState(false);
-  const score = answers.reduce((total, answer, i) => total + (answer === questions[i].correct ? 1 : 0), 0);
+  const score = answers.reduce((total, answer, i) => total + (answer === quizQuestions[i]?.correct ? 1 : 0), 0);
 
   const moveTo = (next: number) => {
     setAnimKey((key) => key + 1);
     setStep(next);
   };
-  const startQuiz = () => {
+  const startQuiz = async () => {
     setScreen("quiz");
     setQuestion(0);
     setAnswers([]);
     setDone(false);
+    setQuizError("");
+    setQuizLoading(true);
+    try {
+      const response = await fetch("/api/generate-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: "preservação dos oceanos, mergulho responsável, biodiversidade marinha e poluição", count: 10 }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Não foi possível gerar o quiz agora.");
+      if (!Array.isArray(payload.questions) || payload.questions.length !== 10) throw new Error("A IA retornou um quiz incompleto. Tente novamente.");
+      setQuizQuestions(payload.questions);
+    } catch (error) {
+      setQuizError(error instanceof Error ? error.message : "Erro ao conectar com a IA.");
+      setQuizQuestions(questions);
+    } finally {
+      setQuizLoading(false);
+    }
   };
   const selectAnswer = (choice: number) => {
     const updated = [...answers];
@@ -54,9 +75,7 @@ function Index() {
     else setQuestion((q) => q + 1);
   };
   const resetQuiz = () => {
-    setQuestion(0);
-    setAnswers([]);
-    setDone(false);
+    void startQuiz();
   };
 
   return (
@@ -97,7 +116,9 @@ function Index() {
         .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #c4e1d9, 0 -25px 0 -24px #c4e1d9, 0 -38px 0 -37px #c4e1d9; }
         .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
         .mar .actions { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:20px 2px 0; }
-        .mar .subtle { border:0; background:transparent; color:#718a8c; font-size:12px; padding:12px 0; }
+        .mar .subtle { border:1px solid #d5e4df; background:#fffefa; color:#527579; font-size:12px; padding:13px 18px; border-radius:999px; transition:background .2s,border-color .2s; }
+        .mar .subtle:hover { background:#edf6f1; border-color:#a9cec4; }
+        .mar .subtle:disabled { opacity:.45; cursor:not-allowed; }
         .mar .primary { display:inline-flex; justify-content:center; align-items:center; gap:10px; border:0; border-radius:999px; background:#075568; color:white; padding:14px 21px; font-size:12px; font-weight:700; transition:transform .2s,background .2s; }
         .mar .primary:hover { background:#063e4c; transform:translateY(-1px); }
         .mar .primary:disabled { opacity:.45; cursor:not-allowed; transform:none; }
@@ -116,8 +137,7 @@ function Index() {
         .mar .result h2 { margin:0 0 12px; font-size:30px; }
         .mar .score { margin:10px 0; color:#12828a; font:800 50px 'Manrope',sans-serif; letter-spacing:-.06em; }
         .mar .result p { color:#668084; font-size:13px; line-height:1.8; }
-        .mar .footer { padding:22px 0 30px; text-align:center; color:#9aacab; font-size:10px; }
-        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { width:100%; height:auto; margin:18px 0 0; border-radius:0; background:transparent; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
+                @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { width:100%; height:auto; margin:18px 0 0; border-radius:0; background:transparent; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
         @media(prefers-reduced-motion:reduce) { .mar *, .mar *:before, .mar *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
       `}</style>
 
@@ -145,7 +165,7 @@ function Index() {
             </div>
           </article>
           <div className="actions">
-            <button className="subtle" onClick={()=>moveTo(Math.max(0,step-1))} style={{visibility:step===0?"hidden":"visible"}}>← Voltar</button>
+            <button className="subtle" onClick={()=>moveTo(Math.max(0,step-1))} disabled={step===0}>← Voltar</button>
             {step < problems.length - 1
               ? <button className="primary" onClick={()=>moveTo(step+1)}>Próximo problema <ArrowRight size={15}/></button>
               : <button className="primary" onClick={startQuiz}>Fazer o Quiz <ArrowRight size={15}/></button>}
@@ -157,17 +177,18 @@ function Index() {
             <p>Dez perguntas rápidas. Você precisa acertar pelo menos oito para atingir a meta.</p>
           </section>
           <div className="quiz-panel" key={done?"result":"question-"+question}>
+            {quizLoading ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Preparando seu quiz...</h2><p>A IA está criando perguntas novas sobre a preservação dos oceanos.</p></div> : quizError ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Não foi possível conectar à IA</h2><p>{quizError}</p><button className="primary" onClick={()=>void startQuiz()}><RotateCcw size={15}/> Tentar novamente</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setQuizQuestions(questions);setQuizError("");setQuestion(0);setAnswers([]);setDone(false)}}>Usar quiz de reserva</button></div></div> : !done ? <>
             {!done ? <>
-              <div className="quiz-heading"><span>PERGUNTA {String(question+1).padStart(2,"0")} / 10</span><span>{answers.filter(a=>a!==undefined).length} respondidas</span></div>
+              <div className="quiz-heading"><span>PERGUNTA {String(question+1).padStart(2,"0")} / {quizQuestions.length}</span><span>{answers.filter(a=>a!==undefined).length} respondidas · IA</span></div>
               <div className="progress" style={{marginBottom:24}}><span style={{width:(((question+1)/questions.length)*100)+"%"}}/></div>
-              <h2>{questions[question].q}</h2>
-              {questions[question].a.map((answer,i)=><button key={answer} className={"answer"+(answers[question]===i?" selected":"")} onClick={()=>selectAnswer(i)}><span className="letter">{String.fromCharCode(65+i)}</span><span>{answer}</span>{answers[question]===i&&<Check size={15} style={{marginLeft:"auto",flexShrink:0}}/>}</button>)}
-              <div className="quiz-bottom"><button className="subtle" onClick={()=>setScreen("problems")}>Voltar aos problemas</button><button className="primary" disabled={answers[question]===undefined} onClick={nextQuestion}>{question===9?"Ver resultado":"Próxima pergunta"} <ChevronRight size={15}/></button></div>
+              <h2>{quizQuestions[question].q}</h2>
+              {quizQuestions[question].a.map((answer,i)=><button key={answer} className={"answer"+(answers[question]===i?" selected":"")} onClick={()=>selectAnswer(i)}><span className="letter">{String.fromCharCode(65+i)}</span><span>{answer}</span>{answers[question]===i&&<Check size={15} style={{marginLeft:"auto",flexShrink:0}}/>}</button>)}
+              <div className="quiz-bottom"><button className="subtle" onClick={()=>setScreen("problems")}>Voltar aos problemas</button><button className="primary" disabled={answers[question]===undefined} onClick={nextQuestion}>{question===quizQuestions.length-1?"Ver resultado":"Próxima pergunta"} <ChevronRight size={15}/></button></div>
             </> : <div className="result"><div className="result-icon">{score>=8?<CheckCircle2 size={30}/>:<Waves size={30}/>}</div><span className="eyebrow">{score>=8?"Meta atingida":"Continue aprendendo"}</span><h2>{score>=8?"Mandou bem!":"Vamos tentar de novo?"}</h2><div className="score">{score}<span style={{fontSize:20,color:"#819b9b"}}>/10</span></div><p>{score>=8?"Você acertou pelo menos oito perguntas. Leve esse cuidado para cada mergulho.":"Você precisa de 8 acertos para atingir a meta. Revise os temas e tente novamente."}</p><button className="primary" onClick={resetQuiz}><RotateCcw size={15}/> Refazer o quiz</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setScreen("problems");setStep(0);setAnimKey(k=>k+1)}}>Voltar aos problemas</button></div></div>}
           </div>
         </>}
 
-        <footer className="footer">Mar Sem Marcas · Explore com cuidado. Preserve com conhecimento.</footer>
+        
       </div>
     </main>
   );
