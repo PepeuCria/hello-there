@@ -5,11 +5,11 @@ import { ArrowRight, ChevronRight, Waves, Leaf, Fish, Recycle, ShieldCheck, Chec
 export const Route = createFileRoute("/")({ component: Index });
 
 const problems = [
-  { title: "O oceano em aquecimento", text: "O aumento da temperatura do mar altera ecossistemas, afeta espécies e pode intensificar o branqueamento dos corais.", note: "Problema demonstrativo — conteúdo será definido com você." },
-  { title: "Plástico no oceano", text: "Resíduos descartados incorretamente podem chegar ao mar, ferir animais e se fragmentar em partículas cada vez menores.", note: "Problema demonstrativo — conteúdo será definido com você." },
-  { title: "Recifes de coral ameaçados", text: "Os recifes abrigam uma enorme diversidade de vida marinha, mas são sensíveis ao calor, à poluição e ao contato físico.", note: "Problema demonstrativo — conteúdo será definido com você." },
-  { title: "Pesca excessiva", text: "Quando os peixes são capturados mais rápido do que conseguem se reproduzir, populações e cadeias alimentares ficam em risco.", note: "Problema demonstrativo — conteúdo será definido com você." },
-  { title: "Impacto humano nos habitats", text: "Atividades humanas podem degradar áreas essenciais para alimentação, abrigo e reprodução de muitas espécies marinhas.", note: "Problema demonstrativo — conteúdo será definido com você." },
+  { title: "Não toque nos corais nem nos animais", text: "Muitos corais crescem apenas cerca de 1 cm por ano. Ao tocar ou quebrar um coral, um mergulhador pode danificar anos de crescimento. O contato também pode ferir ou estressar outros animais marinhos." },
+  { title: "Não alimente os peixes", text: "Quando recebem alimento de mergulhadores, os peixes podem mudar seus hábitos naturais de alimentação. Isso interfere em seu papel no ecossistema e pode desequilibrar a cadeia alimentar." },
+  { title: "Mantenha as nadadeiras longe do fundo", text: "Ao bater as nadadeiras no solo, o mergulhador levanta areia e sedimentos. Essas partículas podem cobrir organismos marinhos, prejudicar alguns habitats e reduzir a entrada de luz na água." },
+  { title: "Controle a sua flutuabilidade", text: "Ajustar corretamente o colete equilibrador e o lastro ajuda a manter a estabilidade durante o mergulho. Sem esse controle, o mergulhador pode colidir com o fundo, quebrar corais e danificar habitats essenciais à vida marinha." },
+  { title: "Não toque nos naufrágios", text: "O contato frequente pode acelerar a degradação dos naufrágios. Essas estruturas também servem de abrigo e fixação para organismos marinhos; tocá-los pode danificar esses seres e perturbar seus habitats." },
 ];
 
 const questions = [
