@@ -533,12 +533,12 @@ function Index() {
 
         /* 07 — LOGO E IMAGENS COM BORDAS SUAVES */
         .wordmark { flex-direction:row; align-items:center; gap:13px; }
-        .brand-logo { display:block; width:46px; height:46px; flex:0 0 46px; object-fit:contain; border-radius:14px; }
+        .brand-logo { display:block; width:64px; height:64px; flex:0 0 64px; object-fit:contain; border-radius:16px; }
         .image-frame { overflow:hidden; border-radius:30px; isolation:isolate; }
         .field-illustration { border-radius:30px; }
         @media(max-width:650px) {
           .wordmark { gap:10px; }
-          .brand-logo { width:38px; height:38px; flex-basis:38px; border-radius:12px; }
+          .brand-logo { width:52px; height:52px; flex-basis:52px; border-radius:14px; }
           .wordmark > span { font-size:21px; }
           .image-frame { border-radius:23px; }
           .field-illustration { border-radius:23px; }
