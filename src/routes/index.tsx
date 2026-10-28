@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { ArrowDownRight, ArrowLeft, ArrowRight, Check, Compass, Copy, Waves } from "lucide-react";
+import { ArrowDownRight, ArrowLeft, ArrowRight, Check, Compass, Waves } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
 
@@ -113,13 +113,6 @@ const questions = [
   { q: "Qual atitude combina com o Mar Sem Marcas?", a: ["Interagir com tudo", "Levar lembranças naturais", "Explorar com curiosidade, cuidado e impacto mínimo", "Priorizar fotos mesmo tocando no recife"], correct: 2, why: "A ideia é aproveitar o oceano com respeito à vida e aos ambientes marinhos." },
 ];
 
-const checklist = [
-  "Conferi meu equipamento e minha flutuabilidade",
-  "Vou manter distância dos corais e animais",
-  "Não vou alimentar a fauna nem retirar lembranças",
-  "Vou trazer de volta todos os meus resíduos",
-  "Vou respeitar o local, a equipe e os limites do mergulho",
-];
 
 function Index() {
   const [step, setStep] = useState(0);
@@ -129,9 +122,6 @@ function Index() {
   const [answers, setAnswers] = useState<number[]>([]);
   const [done, setDone] = useState(false);
   const score = answers.reduce((total, answer, i) => total + (answer === questions[i]?.correct ? 1 : 0), 0);
-  const [checked, setChecked] = useState<boolean[]>(checklist.map(() => false));
-  const [pledged, setPledged] = useState(false);
-  const [copied, setCopied] = useState(false);
   const touchStart = useRef<number | null>(null);
   const current = problems[step]!;
   const theme = { background: "#F4F1EA", foreground: "#06232B", muted: "#49656A" };
@@ -188,13 +178,6 @@ function Index() {
   function previous() {
     if (surface) { setSurface(false); return; }
     setStep((value) => Math.max(0, value - 1));
-  }
-  async function share() {
-    const message = "Mar Sem Marcas — Preservar é deixar livre. Prometo não deixar marcas.";
-    try {
-      if (navigator.share) await navigator.share({ title: "Mar Sem Marcas", text: message });
-      else if (navigator.clipboard) { await navigator.clipboard.writeText(message); setCopied(true); window.setTimeout(() => setCopied(false), 2200); }
-    } catch { /* O usuário pode cancelar o compartilhamento sem erro visual. */ }
   }
 
   return (
@@ -295,31 +278,15 @@ function Index() {
           <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span className="footer-coords">{current.coordinate} · PROF. {current.depth}</span></footer>
         </> : <>
           <section className="surface-content">
-            <p className="field-kicker"><span>REGISTRO CONCLUÍDO</span> / FIM DA EXPEDIÇÃO</p>
-            <h1>De volta à <em>superfície.</em></h1>
-            <p className="surface-intro">O oceano não precisa de lembranças nossas. Precisa de espaço para continuar sendo ele mesmo.</p>
-            <div className="pledge-card">
-              <div className="pledge-seal"><Waves size={30} strokeWidth={1.2}/><span>COMPROMISSO DE CAMPO</span></div>
-              <p>Eu escolho explorar com respeito.</p>
-              <h2>Prometo não deixar <em>marcas.</em></h2>
-              <button className={"pledge-button" + (pledged ? " pledged" : "")} onClick={() => setPledged(!pledged)} aria-pressed={pledged}>
-                {pledged ? <><Check size={16}/> Compromisso assumido</> : <>Assumir compromisso <ArrowRight size={16}/></>}
-              </button>
-            </div>
-            <div className="checklist">
-              <div className="checklist-heading"><span>CHECKLIST DE MERGULHO RESPONSÁVEL</span><span>{checked.filter(Boolean).length} / {checklist.length}</span></div>
-              {checklist.map((item, index) => <label className={"check-row" + (checked[index] ? " checked" : "")} key={item}>
-                <input type="checkbox" checked={checked[index]} onChange={(event) => setChecked((values) => values.map((value, i) => i === index ? event.target.checked : value))}/>
-                <span className="custom-check"><Check size={13}/></span><span>{item}</span>
-              </label>)}
-            </div>
+            <p className="field-kicker"><span>LEITURA CONCLUÍDA</span> / FIM DOS PROBLEMAS</p>
+            <h1>Agora, teste o que <em>aprendeu.</em></h1>
+            <p className="surface-intro">Você terminou de ler os cinco problemas do oceano. Quando estiver pronto, faça o quiz para testar seus conhecimentos sobre preservação marinha.</p>
             <div className="surface-actions">
-              <button className="share-button" onClick={() => { setQuiz(true); setQuestion(0); setAnswers([]); setDone(false); }}><Waves size={15}/> Fazer o quiz</button>
-              <button className="share-button" onClick={() => void share()}><Copy size={15}/>{copied ? "Mensagem copiada" : "Compartilhar compromisso"}</button>
-              <button className="back-button" onClick={() => { setStep(0); setSurface(false); }}><ArrowLeft size={15}/> Revisitar o diário</button>
+              <button className="share-button" onClick={() => { setQuiz(true); setQuestion(0); setAnswers([]); setDone(false); }}><Waves size={15}/> Fazer o quiz <ArrowRight size={16}/></button>
+              <button className="back-button" onClick={() => { setStep(0); setSurface(false); }}><ArrowLeft size={15}/> Revisitar os problemas</button>
             </div>
           </section>
-          <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span>PRESERVAR É DEIXAR LIVRE.</span></footer>
+          <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span>QUIZ DE PRESERVAÇÃO MARINHA</span></footer>
         </>}
       </div>
 
