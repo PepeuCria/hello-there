@@ -18,7 +18,15 @@ export const Route = createFileRoute("/api/generate-quiz")({
           }
 
           const body = (await request.json()) as { topic?: string; count?: number };
-          const topic = typeof body.topic === "string" ? body.topic.slice(0, 300) : "preservação dos oceanos";
+          const ANGLES = ["uma situação prática de mergulho","a consequência para o ecossistema","o motivo da regra","um dado específico do texto","identificar a afirmação incorreta","o que o mergulhador deveria fazer","comparar duas atitudes","causa e efeito","um mito comum","quem é prejudicado"];
+          const pick = () => ANGLES[Math.floor(Math.random() * ANGLES.length)];
+          const plan = [1,1,2,2,3,3,4,4,5,5].sort(() => Math.random() - 0.5).map((n, i) => `${i + 1}) problema ${n}, abordando ${pick()}`).join("; ");
+          const variation = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          const PROBLEMS = `1. Não toque nos corais nem nos animais: muitos corais crescem apenas cerca de 1 cm por ano. Ao tocar ou quebrar um coral, um mergulhador pode danificar anos de crescimento. O contato também pode ferir ou estressar outros animais marinhos.
+2. Não alimente os peixes: quando recebem alimento de mergulhadores, os peixes podem mudar seus hábitos naturais de alimentação. Isso interfere em seu papel no ecossistema e pode desequilibrar a cadeia alimentar.
+3. Mantenha as nadadeiras longe do fundo: ao bater as nadadeiras no solo, o mergulhador levanta areia e sedimentos. Essas partículas podem cobrir organismos marinhos, prejudicar alguns habitats e reduzir a entrada de luz na água.
+4. Controle a sua flutuabilidade: ajustar corretamente o colete equilibrador e o lastro ajuda a manter a estabilidade durante o mergulho. Sem esse controle, o mergulhador pode colidir com o fundo, quebrar corais e danificar habitats essenciais à vida marinha.
+5. Não toque nos naufrágios: o contato frequente pode acelerar a degradação dos naufrágios. Essas estruturas também servem de abrigo e fixação para organismos marinhos; tocá-los pode danificar esses seres e perturbar seus habitats.`;
           const count = Math.min(10, Math.max(5, Number(body.count) || 10));
 
           const schema = {
@@ -56,9 +64,12 @@ export const Route = createFileRoute("/api/generate-quiz")({
               store: false,
               reasoning: { effort: "low" },
               text: { format: { type: "json_schema", name: "quiz", strict: true, schema } },
-              instructions:
-                "Você cria quizzes educativos em português brasileiro. Cada questão deve ter exatamente quatro alternativas plausíveis em 'a', uma única correta indicada por 'correct' (índice 0 a 3) e uma explicação curta e factual em 'why'. Varie os temas e não repita perguntas.",
-              input: `Crie exatamente ${count} perguntas de múltipla escolha, adequadas para estudantes, sobre: ${topic}. Priorize preservação marinha, mergulho responsável, biodiversidade, poluição e atitudes práticas.`,
+              instructions: `Você cria quizzes educativos em português brasileiro. As perguntas devem ser ÚNICA E EXCLUSIVAMENTE sobre os 5 problemas abaixo e baseadas apenas nas informações deles. Não faça perguntas sobre nenhum outro assunto (nada de poluição, plástico, aquecimento global etc.).
+
+${PROBLEMS}
+
+Cada questão deve ter exatamente quatro alternativas plausíveis em 'a', uma única correta indicada por 'correct' (índice 0 a 3) e uma explicação curta em 'why'. Distribua as perguntas entre os 5 problemas (cerca de 2 por problema). Varie a posição da alternativa correta.`,
+              input: `Crie exatamente ${count} perguntas novas e diferentes. Siga este plano, na ordem: ${plan}. Código de variação: ${variation}. Explore ângulos variados (situações práticas, consequências, motivos, verdadeiro/falso em forma de alternativa, cenários de mergulho), sem repetir perguntas óbvias.`,
             }),
           });
 
