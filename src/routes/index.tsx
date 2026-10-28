@@ -91,9 +91,8 @@ function Index() {
         .mar .problem-symbol { display:grid; place-items:center; width:47px; height:47px; border-radius:16px; background:#e5f3ed; color:#16838a; }
         .mar .problem-card h2 { max-width:610px; font-size:clamp(27px,4.5vw,40px); line-height:1.13; margin:22px 0 12px; }
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#617b7e; }
-        .mar .illustration-area { position:relative; height:clamp(260px,42vw,390px); margin:18px 0 0; overflow:hidden; border-radius:0; background:transparent; isolation:isolate; }
-        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:contain; object-position:center; animation:arrive .8s cubic-bezier(.16,1,.3,1) both; }
-        .mar .illustration-label { position:absolute; z-index:2; top:14px; left:0; color:#8ba9a4; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; pointer-events:none; }
+        .mar .illustration-area { position:relative; height:clamp(280px,44vw,430px); margin:18px -24px 0; overflow:hidden; border-radius:0; background:transparent; isolation:isolate; -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 13%, #000 82%, transparent 100%); mask-image:linear-gradient(to bottom, transparent 0%, #000 13%, #000 82%, transparent 100%); }
+        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:cover; object-position:center; animation:arrive .8s cubic-bezier(.16,1,.3,1) both; -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%); mask-image:linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%); }
         .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; z-index:0; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #c4e1d9; opacity:.7; }
         .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #c4e1d9, 0 -25px 0 -24px #c4e1d9, 0 -38px 0 -37px #c4e1d9; }
         .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
@@ -142,7 +141,6 @@ function Index() {
             <h2>{problems[step].title}</h2>
             <p>{problems[step].text}</p>
             <div className="illustration-area">
-              <span className="illustration-label">Preserve o oceano</span>
               <img className="illustration-image" src={problems[step].image} alt={problems[step].imageAlt} loading="eager" />
             </div>
           </article>
