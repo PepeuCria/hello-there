@@ -71,7 +71,7 @@ function Index() {
     setAnswers(updated);
   };
   const nextQuestion = () => {
-    if (question === questions.length - 1) setDone(true);
+    if (question === quizQuestions.length - 1) setDone(true);
     else setQuestion((q) => q + 1);
   };
   const resetQuiz = () => {
@@ -178,7 +178,6 @@ function Index() {
           </section>
           <div className="quiz-panel" key={done?"result":"question-"+question}>
             {quizLoading ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Preparando seu quiz...</h2><p>A IA está criando perguntas novas sobre a preservação dos oceanos.</p></div> : quizError ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Não foi possível conectar à IA</h2><p>{quizError}</p><button className="primary" onClick={()=>void startQuiz()}><RotateCcw size={15}/> Tentar novamente</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setQuizQuestions(questions);setQuizError("");setQuestion(0);setAnswers([]);setDone(false)}}>Usar quiz de reserva</button></div></div> : !done ? <>
-            {!done ? <>
               <div className="quiz-heading"><span>PERGUNTA {String(question+1).padStart(2,"0")} / {quizQuestions.length}</span><span>{answers.filter(a=>a!==undefined).length} respondidas · IA</span></div>
               <div className="progress" style={{marginBottom:24}}><span style={{width:(((question+1)/questions.length)*100)+"%"}}/></div>
               <h2>{quizQuestions[question].q}</h2>
