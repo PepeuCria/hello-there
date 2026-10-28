@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, ChevronRight, Waves, Leaf, Fish, Recycle, ShieldCheck, Check, RotateCcw, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -35,7 +35,7 @@ function Index() {
   const [quizError, setQuizError] = useState("");
   const [answers, setAnswers] = useState<number[]>([]);
   const [done, setDone] = useState(false);
-  const score = answers.reduce((total, answer, i) => total + (answer === quizQuestions[i]?.correct ? 1 : 0), 0);
+  const score = answers.reduce((total, answer, i) => total + (answer === quizQuestions[i]?.correct ? 1 : 0), 0);\n\n  // Baixa a próxima ilustração enquanto a pessoa lê a atual, evitando espera ao avançar.\n  useEffect(() => {\n    const nextImage = problems[step + 1]?.image;\n    if (!nextImage) return;\n    const preload = new Image();\n    preload.decoding = "async";\n    preload.src = nextImage;\n  }, [step]);
 
   const moveTo = (next: number) => {
     setAnimKey((key) => key + 1);
@@ -111,7 +111,7 @@ function Index() {
         .mar .progress-label { display:flex; justify-content:space-between; gap:12px; margin-bottom:9px; color:#52777A; font-size:10px; font-weight:700; }
         .mar .progress { height:4px; border-radius:20px; background:#E8F4EF; overflow:hidden; }
         .mar .progress span { display:block; height:100%; border-radius:20px; background:#126E75; transition:width .55s cubic-bezier(.2,.8,.2,1); }
-        .mar .problem-card { position:relative; overflow:hidden; min-height:0; padding:clamp(18px,3vw,30px) 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; animation:oceanReveal .8s cubic-bezier(.16,1,.3,1) both; }
+        .mar .problem-card { position:relative; overflow:hidden; min-height:0; padding:clamp(18px,3vw,30px) 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; animation:oceanReveal .45s cubic-bezier(.16,1,.3,1) both; }
         @keyframes oceanReveal { 0% { opacity:.15; clip-path:inset(0 0 100% 0 round 27px); transform:translateY(22px) scale(.985); filter:blur(5px); } 55% { opacity:1; filter:blur(1px); } 100% { opacity:1; clip-path:inset(0 0 0 0 round 27px); transform:translateY(0) scale(1); filter:blur(0); } }
         @keyframes arrive { from { opacity:0; transform:translateY(13px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
         .mar .problem-top { display:flex; justify-content:space-between; align-items:center; }
@@ -120,7 +120,7 @@ function Index() {
         .mar .problem-card h2 { max-width:610px; font-size:clamp(27px,4.5vw,40px); line-height:1.13; margin:22px 0 12px; }
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#52777A; }
         .mar .illustration-area { position:relative; width:100%; margin:18px 0 0; overflow:visible; border-radius:0; background:transparent; isolation:isolate; -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); }
-        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:auto; max-width:100%; object-fit:contain; object-position:center; animation:arrive .8s cubic-bezier(.16,1,.3,1) both; }
+        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:auto; max-width:100%; object-fit:contain; object-position:center; animation:arrive .35s cubic-bezier(.16,1,.3,1) both; }
         .mar .actions { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:20px 2px 0; }
         .mar .subtle { border:1px solid #C7DCD7; background:#FFFFFF; color:#126E75; font-size:12px; padding:13px 18px; border-radius:999px; transition:background .2s,border-color .2s; }
         .mar .subtle:hover { background:#E8F4EF; border-color:#50B9AD; }
@@ -182,7 +182,7 @@ function Index() {
             <h2>{problems[step]!.title}</h2>
             <p>{problems[step]!.text}</p>
             <div className="illustration-area">
-              <img className="illustration-image" src={problems[step]!.image} alt={problems[step]!.imageAlt} loading="eager" />
+              <img className="illustration-image" src={problems[step]!.image} alt={problems[step]!.imageAlt} loading="eager" fetchPriority="high" decoding="async" />
             </div>
           </article>
           <div className="actions">
