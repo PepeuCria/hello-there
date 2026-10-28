@@ -83,7 +83,7 @@ function Index() {
         .mar .progress-label { display:flex; justify-content:space-between; gap:12px; margin-bottom:9px; color:#7b9393; font-size:10px; font-weight:700; }
         .mar .progress { height:4px; border-radius:20px; background:#e2ece6; overflow:hidden; }
         .mar .progress span { display:block; height:100%; border-radius:20px; background:#13858b; transition:width .55s cubic-bezier(.2,.8,.2,1); }
-        .mar .problem-card { position:relative; overflow:hidden; min-height:650px; padding:clamp(25px,5vw,48px); border:1px solid #e1eae4; border-top:0; border-radius:0 0 27px 27px; background:#fffefa; box-shadow:0 16px 50px #164a5010; animation:oceanReveal .8s cubic-bezier(.16,1,.3,1) both; }
+        .mar .problem-card { position:relative; overflow:hidden; min-height:0; padding:clamp(18px,3vw,30px) 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; animation:oceanReveal .8s cubic-bezier(.16,1,.3,1) both; }
         @keyframes oceanReveal { 0% { opacity:.15; clip-path:inset(0 0 100% 0 round 27px); transform:translateY(22px) scale(.985); filter:blur(5px); } 55% { opacity:1; filter:blur(1px); } 100% { opacity:1; clip-path:inset(0 0 0 0 round 27px); transform:translateY(0) scale(1); filter:blur(0); } }
         @keyframes arrive { from { opacity:0; transform:translateY(13px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
         .mar .problem-top { display:flex; justify-content:space-between; align-items:center; }
@@ -91,8 +91,8 @@ function Index() {
         .mar .problem-symbol { display:grid; place-items:center; width:47px; height:47px; border-radius:16px; background:#e5f3ed; color:#16838a; }
         .mar .problem-card h2 { max-width:610px; font-size:clamp(27px,4.5vw,40px); line-height:1.13; margin:22px 0 12px; }
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#617b7e; }
-        .mar .illustration-area { position:relative; height:clamp(240px,38vw,350px); margin:30px 0 0; overflow:hidden; border-radius:25px; background:linear-gradient(180deg, #f7faf6 0%, #eef6f0 65%, #dcefe8 100%); }
-        .mar .illustration-label { position:absolute; top:16px; left:18px; color:#8ba9a4; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+        .mar .illustration-area { position:relative; height:clamp(240px,38vw,350px); margin:22px 0 0; overflow:hidden; border-radius:0; background:transparent; }
+        .mar .illustration-label { position:absolute; top:16px; left:0; color:#8ba9a4; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
         .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #c4e1d9; opacity:.7; }
         .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #c4e1d9, 0 -25px 0 -24px #c4e1d9, 0 -38px 0 -37px #c4e1d9; }
         .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
@@ -117,7 +117,7 @@ function Index() {
         .mar .score { margin:10px 0; color:#12828a; font:800 50px 'Manrope',sans-serif; letter-spacing:-.06em; }
         .mar .result p { color:#668084; font-size:13px; line-height:1.8; }
         .mar .footer { padding:22px 0 30px; text-align:center; color:#9aacab; font-size:10px; }
-        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:25px 22px; border-radius:0 0 22px 22px; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { height:235px; margin-top:22px; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
+        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { height:235px; margin-top:18px; border-radius:0; background:transparent; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
         @media(prefers-reduced-motion:reduce) { .mar *, .mar *:before, .mar *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
       `}</style>
 
@@ -131,11 +131,6 @@ function Index() {
         </header>
 
         {screen === "problems" ? <>
-          <section className="intro">
-            <span className="eyebrow"><Leaf size={13}/> Antes de mergulhar</span>
-            <h1>O oceano precisa<br/>da nossa atenção.</h1>
-            <p>Conheça cinco problemas que afetam o mar. Leia cada um no seu ritmo e avance para o próximo.</p>
-          </section>
           <div className="problem-heading"><span>Problemas do oceano</span><span>{String(step + 1).padStart(2,"0")} / 05</span></div>
           <div className="progress-wrap"><div className="progress"><span style={{width:(((step+1)/problems.length)*100)+"%"}}/></div></div>
           <article className="problem-card" key={animKey}>
