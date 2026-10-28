@@ -50,8 +50,31 @@ export const Route = createFileRoute("/api/generate-quiz")({
 
           if (!aiResponse.ok) {
             const details = await aiResponse.text();
-            console.error("OpenAI quiz error:", details);
-            return Response.json({ error: "O serviço de IA não conseguiu gerar o quiz. Tente novamente." }, { status: 502 });
+            console.error("OpenAI quiz error:", aiResponse.status, details);
+
+            // Return a useful, safe message to the interface without exposing API response details.
+            if (aiResponse.status === 401 || aiResponse.status === 403) {
+              return Response.json(
+                { error: "A chave da OpenAI está inválida ou sem permissão. Confira o segredo OPENAI_API_KEY no ambiente publicado." },
+                { status: 502 },
+              );
+            }
+            if (aiResponse.status === 429) {
+              return Response.json(
+                { error: "A OpenAI recusou a solicitação por limite ou falta de créditos. Confira o uso e o faturamento da sua conta da API." },
+                { status: 502 },
+              );
+            }
+            if (aiResponse.status === 404) {
+              return Response.json(
+                { error: "O modelo de IA configurado não foi encontrado. Remova OPENAI_MODEL ou defina um modelo disponível, como gpt-4o-mini." },
+                { status: 502 },
+              );
+            }
+            return Response.json(
+              { error: "A OpenAI respondeu com erro. Tente novamente; se continuar, confira os logs do servidor para ver o código exato." },
+              { status: 502 },
+            );
           }
 
           const data = await aiResponse.json();
@@ -60,7 +83,15 @@ export const Route = createFileRoute("/api/generate-quiz")({
             return Response.json({ error: "A IA retornou uma resposta vazia." }, { status: 502 });
           }
 
-          const parsed = JSON.parse(content) as { questions?: QuizQuestion[] };
+          let parsed: { questions?: QuizQuestion[] };
+          try {
+            parsed = JSON.parse(content) as { questions?: QuizQuestion[] };
+          } catch {
+            return Response.json(
+              { error: "A IA gerou uma resposta que não pôde ser lida. Tente novamente." },
+              { status: 502 },
+            );
+          }
           const questions = parsed.questions;
           const valid = Array.isArray(questions) && questions.length === count && questions.every((item) =>
             typeof item.q === "string" &&
