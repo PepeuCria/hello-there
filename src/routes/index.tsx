@@ -87,7 +87,7 @@ function Index() {
         body { margin:0; background:#f8faf7; }
         .mar { min-height:100vh; background:#f8faf7; color:#103b45; font-family:'DM Sans',sans-serif; }
         .mar button { font:inherit; cursor:pointer; }
-        .mar .shell { width:min(820px,calc(100% - 36px)); margin:0 auto; }
+        .mar .shell { width:min(820px,calc(100% - 36px)); margin:0 auto; padding-bottom:88px; }
         .mar .topbar { height:76px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #e3ece7; }
         .mar .brand { display:flex; align-items:center; gap:10px; color:#103b45; text-decoration:none; font:800 17px 'Manrope',sans-serif; letter-spacing:-.06em; }
         .mar .brand-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:12px; background:#0a5666; color:#effffb; }
