@@ -100,6 +100,19 @@ const problems = [
   },
 ];
 
+const questions = [
+  { q: "Qual é a melhor atitude ao observar um coral durante um mergulho?", a: ["Tocar de leve para sentir a textura", "Manter distância e controlar a flutuabilidade", "Apoiar a nadadeira para tirar uma foto", "Levar um pequeno fragmento como lembrança"], correct: 1, why: "Corais são animais frágeis. Um toque pode danificar seus tecidos e aumentar o risco de doenças." },
+  { q: "Por que o plástico é um problema persistente no oceano?", a: ["Porque se dissolve instantaneamente", "Porque só afeta animais grandes", "Porque pode se fragmentar em microplásticos", "Porque transforma água salgada em doce"], correct: 2, why: "O plástico pode se fragmentar em partículas minúsculas que permanecem no ambiente e entram na cadeia alimentar." },
+  { q: "O que é branqueamento de corais?", a: ["Uma limpeza natural feita por peixes", "A perda das algas que vivem em parceria com o coral", "O crescimento acelerado dos recifes", "Uma camada de areia sobre o recife"], correct: 1, why: "O estresse, especialmente o calor excessivo, pode levar o coral a perder as algas que lhe dão cor e energia." },
+  { q: "Qual ação ajuda a reduzir o impacto climático?", a: ["Desperdiçar energia quando possível", "Queimar resíduos ao ar livre", "Reduzir desperdícios e emissões no dia a dia", "Descartar pilhas no lixo comum"], correct: 2, why: "Reduzir emissões e desperdícios ajuda a diminuir a pressão sobre o clima e os oceanos." },
+  { q: "O que significa pesca excessiva?", a: ["Pescar somente para alimentação", "Capturar peixes mais rápido do que as populações conseguem se recuperar", "Proteger áreas de reprodução", "Observar peixes sem capturá-los"], correct: 1, why: "Quando a captura supera a capacidade de reposição das espécies, populações e ecossistemas ficam ameaçados." },
+  { q: "Ao encontrar um animal marinho durante o mergulho, você deve…", a: ["Persegui-lo para conseguir uma foto", "Oferecer alimento", "Observar sem perseguir, tocar ou alimentar", "Bloquear sua passagem"], correct: 2, why: "Dar espaço aos animais evita estresse e permite que mantenham seu comportamento natural." },
+  { q: "Por que controlar a flutuabilidade é importante?", a: ["Só para economizar tempo", "Para evitar contato acidental com o fundo e os organismos", "Para nadar sempre mais rápido", "Para dispensar o planejamento do mergulho"], correct: 1, why: "Boa flutuabilidade ajuda a evitar impactos em corais, sedimentos e outros habitats." },
+  { q: "Como lidar com resíduos durante uma saída de mergulho?", a: ["Deixar na areia", "Enterrar o lixo", "Levar os resíduos de volta e descartá-los corretamente", "Jogar no mar se forem pequenos"], correct: 2, why: "Resíduos devem voltar com você e receber destinação adequada." },
+  { q: "O que uma área marinha protegida pode ajudar a preservar?", a: ["Apenas a cor da água", "Habitats, espécies e locais de reprodução", "Somente embarcações", "A poluição dentro de suas fronteiras"], correct: 1, why: "Áreas protegidas bem planejadas podem dar espaço para habitats e populações marinhas se recuperarem." },
+  { q: "Qual atitude combina com o Mar Sem Marcas?", a: ["Interagir com tudo", "Levar lembranças naturais", "Explorar com curiosidade, cuidado e impacto mínimo", "Priorizar fotos mesmo tocando no recife"], correct: 2, why: "A ideia é aproveitar o oceano com respeito à vida e aos ambientes marinhos." },
+];
+
 const checklist = [
   "Conferi meu equipamento e minha flutuabilidade",
   "Vou manter distância dos corais e animais",
@@ -110,7 +123,7 @@ const checklist = [
 
 function Index() {
   const [step, setStep] = useState(0);
-  const [surface, setSurface] = useState(false);
+  const [surface, setSurface] = useState(false);\n  const [quiz, setQuiz] = useState(false);\n  const [question, setQuestion] = useState(0);\n  const [answers, setAnswers] = useState<number[]>([]);\n  const [done, setDone] = useState(false);\n  const score = answers.reduce((total, answer, i) => total + (answer === questions[i]?.correct ? 1 : 0), 0);
   const [checked, setChecked] = useState<boolean[]>(checklist.map(() => false));
   const [pledged, setPledged] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -154,9 +167,9 @@ function Index() {
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "ArrowRight" && !surface) { event.preventDefault(); next(); }
-      if (event.key === "ArrowLeft" && !surface) { event.preventDefault(); previous(); }
-      if (event.key === "Escape" && surface) setSurface(false);
+      if (event.key === "ArrowRight" && !surface && !quiz) { event.preventDefault(); next(); }
+      if (event.key === "ArrowLeft" && !surface && !quiz) { event.preventDefault(); previous(); }
+      if (event.key === "Escape" && quiz) setQuiz(false);\n      if (event.key === "Escape" && surface && !quiz) setSurface(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -278,7 +291,7 @@ function Index() {
               </label>)}
             </div>
             <div className="surface-actions">
-              <button className="share-button" onClick={() => void share()}><Copy size={15}/>{copied ? "Mensagem copiada" : "Compartilhar compromisso"}</button>
+              <button className="share-button" onClick={() => { setQuiz(true); setQuestion(0); setAnswers([]); setDone(false); }}><Waves size={15}/> Fazer o quiz</button>\n              <button className="share-button" onClick={() => void share()}><Copy size={15}/>{copied ? "Mensagem copiada" : "Compartilhar compromisso"}</button>
               <button className="back-button" onClick={() => { setStep(0); setSurface(false); }}><ArrowLeft size={15}/> Revisitar o diário</button>
             </div>
           </section>
@@ -399,7 +412,7 @@ function Index() {
         .custom-check { display:grid; place-items:center; flex:0 0 19px; width:19px;height:19px; border:1px solid color-mix(in srgb,var(--muted) 55%,transparent); color:transparent; transition:all .2s; }
         .check-row.checked .custom-check { background:var(--teal); border-color:var(--teal); color:white; }
         .check-row.checked > span:last-child { color:var(--muted); text-decoration:line-through; text-decoration-color:var(--coral); }
-        .surface-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+        .quiz-panel { margin:28px 0; padding:clamp(20px,4vw,34px); border:1px solid color-mix(in srgb,var(--muted) 28%,transparent); background:color-mix(in srgb,var(--paper) 90%,white 10%); }\n        .quiz-progress { height:3px; margin:18px 0 28px; background:color-mix(in srgb,var(--muted) 20%,transparent); }\n        .quiz-progress span { display:block; height:100%; background:var(--coral); transition:width .3s ease; }\n        .quiz-panel h2 { font:400 clamp(25px,4vw,38px)/1.15 var(--serif); margin:0 0 22px; }\n        .quiz-answer { display:flex; align-items:center; gap:13px; width:100%; padding:15px; margin:9px 0; text-align:left; border:1px solid color-mix(in srgb,var(--muted) 28%,transparent); background:transparent; color:var(--ink); font-size:13px; line-height:1.5; }\n        .quiz-answer.selected { border-color:var(--teal); background:color-mix(in srgb,var(--teal) 9%,var(--paper)); }\n        .quiz-letter { display:grid; place-items:center; flex:0 0 28px; width:28px; height:28px; border:1px solid color-mix(in srgb,var(--muted) 30%,transparent); border-radius:50%; font:10px var(--mono); }\n        .quiz-answer.selected .quiz-letter { background:var(--teal); color:white; }\n        .quiz-result { text-align:center; padding:18px 0; }\n        .quiz-score { display:block; font:400 clamp(72px,12vw,110px)/1 var(--serif); color:var(--teal); }\n        .quiz-score small { font-size:24px; color:var(--muted); }\n        .quiz-result h2 { margin:20px 0 10px; }\n        .quiz-result p { color:var(--muted); line-height:1.7; margin-bottom:28px; }\n        .share-button:disabled { opacity:.45; cursor:not-allowed; }\n        .surface-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
         .share-button { background:var(--abissal); }
         .share-button:hover { background:var(--teal); }
         .surface-screen .depth-ruler { opacity:.45; }
