@@ -141,7 +141,6 @@ function Index() {
             </div>
             <h2>{problems[step].title}</h2>
             <p>{problems[step].text}</p>
-            <div className="illustration-hint">ESPAÇO RESERVADO PARA A ILUSTRAÇÃO DESTE PROBLEMA</div>
           </article>
           <div className="actions">
             <button className="subtle" onClick={()=>moveTo(Math.max(0,step-1))} style={{visibility:step===0?"hidden":"visible"}}>← Voltar</button>
