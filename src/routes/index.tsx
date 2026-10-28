@@ -83,8 +83,8 @@ function Index() {
         .mar .progress-label { display:flex; justify-content:space-between; gap:12px; margin-bottom:9px; color:#7b9393; font-size:10px; font-weight:700; }
         .mar .progress { height:4px; border-radius:20px; background:#e2ece6; overflow:hidden; }
         .mar .progress span { display:block; height:100%; border-radius:20px; background:#13858b; transition:width .55s cubic-bezier(.2,.8,.2,1); }
-        .mar .problem-card { position:relative; overflow:hidden; min-height:650px; padding:clamp(25px,5vw,48px); border:1px solid #e1eae4; border-top:0; border-radius:0 0 27px 27px; background:#fffefa; box-shadow:0 16px 50px #164a5010; animation:problemEnter .55s cubic-bezier(.2,.8,.2,1) both; }
-        @keyframes problemEnter { from { opacity:0; transform:translateY(22px); clip-path:inset(8% 0 0); } to { opacity:1; transform:translateY(0); clip-path:inset(0 0 0); } }
+        .mar .problem-card { position:relative; overflow:hidden; min-height:650px; padding:clamp(25px,5vw,48px); border:1px solid #e1eae4; border-top:0; border-radius:0 0 27px 27px; background:#fffefa; box-shadow:0 16px 50px #164a5010; animation:oceanReveal .5s cubic-bezier(.2,.8,.2,1) both; }
+        @keyframes oceanReveal { from { opacity:.35; clip-path:inset(0 0 100% 0 round 27px); transform:translateY(8px); } 65% { opacity:1; } to { opacity:1; clip-path:inset(0 0 0 0 round 27px); transform:translateY(0); } }
         @keyframes arrive { from { opacity:0; transform:translateY(13px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
         .mar .problem-top { display:flex; justify-content:space-between; align-items:center; }
         .mar .problem-number { font:800 clamp(70px,12vw,112px)/.9 'Manrope',sans-serif; color:#0a6572; letter-spacing:-.09em; }
