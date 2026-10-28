@@ -89,7 +89,10 @@ function Index() {
         .mar .problem-symbol { display:grid; place-items:center; width:47px; height:47px; border-radius:16px; background:#e5f3ed; color:#16838a; }
         .mar .problem-card h2 { max-width:610px; font-size:clamp(28px,4.8vw,42px); line-height:1.13; margin:28px 0 14px; }
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#617b7e; }
-        .mar .illustration-hint { margin-top:30px; padding-top:17px; border-top:1px solid #edf1ec; color:#9aacab; font-size:10px; }
+        .mar .illustration-area { position:relative; height:clamp(150px,28vw,230px); margin:24px -8px -8px; overflow:hidden; border-radius:18px; background:linear-gradient(180deg, #fffefa 0%, #f3f8f3 70%, #e8f4ef 100%); }
+        .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #c4e1d9; opacity:.7; }
+        .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #c4e1d9, 0 -25px 0 -24px #c4e1d9, 0 -38px 0 -37px #c4e1d9; }
+        .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
         .mar .actions { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:20px 2px 0; }
         .mar .subtle { border:0; background:transparent; color:#718a8c; font-size:12px; padding:12px 0; }
         .mar .primary { display:inline-flex; justify-content:center; align-items:center; gap:10px; border:0; border-radius:999px; background:#075568; color:white; padding:14px 21px; font-size:12px; font-weight:700; transition:transform .2s,background .2s; }
@@ -111,7 +114,7 @@ function Index() {
         .mar .score { margin:10px 0; color:#12828a; font:800 50px 'Manrope',sans-serif; letter-spacing:-.06em; }
         .mar .result p { color:#668084; font-size:13px; line-height:1.8; }
         .mar .footer { padding:22px 0 30px; text-align:center; color:#9aacab; font-size:10px; }
-        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:320px; border-radius:22px; } .mar .problem-card h2 { margin-top:23px; } .mar .problem-card p { font-size:14px; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
+        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:320px; border-radius:22px; } .mar .problem-card h2 { margin-top:23px; } .mar .problem-card p { font-size:14px; } .mar .illustration-area { height:170px; margin-top:20px; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
         @media(prefers-reduced-motion:reduce) { .mar *, .mar *:before, .mar *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
       `}</style>
 
@@ -141,6 +144,7 @@ function Index() {
             </div>
             <h2>{problems[step].title}</h2>
             <p>{problems[step].text}</p>
+            <div className="illustration-area" aria-label="Área reservada para a ilustração deste problema" />
           </article>
           <div className="actions">
             <button className="subtle" onClick={()=>moveTo(Math.max(0,step-1))} style={{visibility:step===0?"hidden":"visible"}}>← Voltar</button>
