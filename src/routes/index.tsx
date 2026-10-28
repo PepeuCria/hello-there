@@ -172,7 +172,7 @@ function Index() {
       <div className="shell">
         <header className="topbar">
           <a className="brand" href="/" aria-label="Mar Sem Marcas">
-            <img className="brand-logo" src="/public/images/Emblema%20M%C3%A9dico%20Teal%20com%20Ondas.png?v=2" alt="Logo Mar Sem Marcas" />
+            <img className="brand-logo" src="/public/images/Emblema%20de%20Sa%C3%BAde%20e%20Ondas.png?v=3" alt="Logo Mar Sem Marcas" />
             <span className="brand-wordmark">
               <span className="brand-name">mar sem marcas<span>.</span></span>
               <span className="brand-caption">Preservar é deixar livre</span>
