@@ -78,14 +78,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Mar Sem Marcas | Explore o mar. Deixe só boas marcas." },
+      { name: "description", content: "Educação ambiental para mergulhadores e centros de mergulho. Aprenda a proteger o oceano antes de entrar na água." },
+      { name: "author", content: "Mar Sem Marcas" },
+      { property: "og:title", content: "Mar Sem Marcas | Explore o mar. Deixe só boas marcas." },
+      { property: "og:description", content: "Aprenda sobre o oceano e descubra como mergulhar com consciência." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@marsemmarcas" },
     ],
     links: [
       {
@@ -103,7 +103,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         <HeadContent />
       </head>
