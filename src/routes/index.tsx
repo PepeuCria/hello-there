@@ -217,7 +217,7 @@ function Index() {
 
           <section className="expedition-layout" key={step}>
             <div className="expedition-copy">
-              <p className="field-kicker"><span>NOTA {String(step + 1).padStart(2,"0")}</span> / {current.kicker}</p>
+              <p className="field-kicker"><span className="note-label">NOTA <b className="note-number">{step + 1}</b></span><span className="kicker-divider">/ {current.kicker}</span></p>
               <h1>{current.title}</h1>
               <p className="description">{current.text}</p>
               <div className="stat-card">
@@ -334,7 +334,7 @@ function Index() {
         .expedition-layout { display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:clamp(28px,5.5vw,88px); align-items:center; min-height:min(650px,calc(100svh - 240px)); padding:42px 0 32px; }
         .expedition-copy { position:relative; z-index:2; max-width:490px; }
         .field-kicker { color:var(--muted); font-size:9px; letter-spacing:.1em; margin:0 0 23px; }
-        .field-kicker span { color:var(--coral); }
+        .field-kicker { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }\n        .field-kicker .note-label { display:inline-flex; align-items:baseline; gap:7px; color:var(--coral); font-size:10px; letter-spacing:.14em; }\n        .field-kicker .note-number { font:500 clamp(42px,5vw,64px)/.78 var(--serif); letter-spacing:-.08em; color:var(--ink); }\n        .field-kicker .kicker-divider { color:var(--muted); }
         .expedition-copy h1,.surface-content h1 { font:400 clamp(43px,5.2vw,76px)/.99 var(--serif); letter-spacing:-.055em; margin:0 0 23px; max-width:560px; }
         .expedition-copy h1 em,.surface-content h1 em,.pledge-card h2 em { color:var(--teal); font-weight:400; }
         .expedition-copy .description { max-width:420px; font-size:14px; line-height:1.9; color:var(--muted); margin:0; }
@@ -426,7 +426,7 @@ function Index() {
           .chapter-bar { padding-top:20px; font-size:8px; }
           .expedition-layout { display:flex; flex-direction:column; align-items:stretch; gap:0; min-height:0; padding:34px 0 20px; }
           .expedition-copy { max-width:none; }
-          .field-kicker { margin-bottom:18px; font-size:8px; }
+          .field-kicker { margin-bottom:18px; font-size:8px; gap:9px; }\n          .field-kicker .note-label { font-size:8px; gap:5px; }\n          .field-kicker .note-number { font-size:clamp(42px,12vw,54px); }
           .expedition-copy h1 { font-size:clamp(44px,12vw,65px); margin-bottom:18px; max-width:520px; }
           .expedition-copy .description { font-size:13px; line-height:1.8; }
           .stat-card { margin-top:22px; padding:14px 17px; max-width:100%; }
