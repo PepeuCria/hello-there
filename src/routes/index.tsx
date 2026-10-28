@@ -35,7 +35,16 @@ function Index() {
   const [quizError, setQuizError] = useState("");
   const [answers, setAnswers] = useState<number[]>([]);
   const [done, setDone] = useState(false);
-  const score = answers.reduce((total, answer, i) => total + (answer === quizQuestions[i]?.correct ? 1 : 0), 0);\n\n  // Baixa a próxima ilustração enquanto a pessoa lê a atual, evitando espera ao avançar.\n  useEffect(() => {\n    const nextImage = problems[step + 1]?.image;\n    if (!nextImage) return;\n    const preload = new Image();\n    preload.decoding = "async";\n    preload.src = nextImage;\n  }, [step]);
+  const score = answers.reduce((total, answer, i) => total + (answer === quizQuestions[i]?.correct ? 1 : 0), 0);
+
+  // Baixa a próxima ilustração enquanto a pessoa lê a atual, evitando espera ao avançar.
+  useEffect(() => {
+    const nextImage = problems[step + 1]?.image;
+    if (!nextImage) return;
+    const preload = new Image();
+    preload.decoding = "async";
+    preload.src = nextImage;
+  }, [step]);
 
   const moveTo = (next: number) => {
     setAnimKey((key) => key + 1);
