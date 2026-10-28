@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { ArrowDownRight, ArrowLeft, ArrowRight, Check, Compass, Copy, Waves } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
@@ -123,10 +123,24 @@ function Index() {
     if (reduce) return;
     const win = window as any;
     const animate = () => {
-      if (win.gsap) {
+      const run = () => {
+        if (!win.gsap) return;
+        if (win.ScrollTrigger) win.gsap.registerPlugin(win.ScrollTrigger);
         win.gsap.fromTo(".expedition-copy > *", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .09, ease: "power2.out", clearProps: "transform" });
         win.gsap.fromTo(".artwork", { y: 14, opacity: 0, scale: .985 }, { y: 0, opacity: 1, scale: 1, duration: 1.1, ease: "expo.out", clearProps: "transform" });
-      }
+        win.gsap.utils.toArray(".stat-card, .pledge-card, .checklist").forEach((node: Element) => {
+          win.gsap.fromTo(node, { y: 12, opacity: 0 }, { y: 0, opacity: 1, duration: .7, ease: "power2.out", scrollTrigger: { trigger: node, start: "top 90%", once: true } });
+        });
+      };
+      if (!win.gsap) return;
+      if (win.ScrollTrigger) run();
+      else if (!document.querySelector('script[data-scroll-trigger="expedition"]')) {
+        const plugin = document.createElement("script");
+        plugin.src = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js";
+        plugin.dataset.scrollTrigger = "expedition";
+        plugin.onload = run;
+        document.head.appendChild(plugin);
+      } else run();
     };
     if (!document.querySelector('script[data-gsap="expedition"]')) {
       const script = document.createElement("script");
@@ -165,7 +179,7 @@ function Index() {
   }
 
   return (
-    <main className={"expedition" + (surface ? " surface-screen" : "")} style={{ "--paper": theme.background, "--ink": theme.foreground, "--muted": theme.muted } as React.CSSProperties}
+    <main className={"expedition" + (surface ? " surface-screen" : "")} style={{ "--paper": theme.background, "--ink": theme.foreground, "--muted": theme.muted } as CSSProperties}
       onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }}
       onTouchEnd={(event) => {
         if (touchStart.current === null) return;
