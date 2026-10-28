@@ -219,7 +219,24 @@ function Index() {
           <div className="masthead-right"><span className="header-count">{surface ? "S / 05" : String(step + 1).padStart(2,"0") + " / 05"}</span></div>
         </header>
 
-        {!surface ? <>
+        {quiz ? <>
+          <section className="surface-content quiz-content">
+            <p className="field-kicker"><span>TESTE DE CONHECIMENTO</span> / QUIZ DO OCEANO</p>
+            <h1>O que você <em>aprendeu?</em></h1>
+            <p className="surface-intro">Responda às 10 perguntas sobre preservação marinha. A meta é acertar pelo menos 8.</p>
+            <div className="quiz-panel">
+              {!done ? <>
+                <div className="checklist-heading"><span>PERGUNTA {String(question + 1).padStart(2, "0")} / {questions.length}</span><span>{answers.filter(a => a !== undefined).length} respondidas</span></div>
+                <div className="quiz-progress"><span style={{width: (((question + 1) / questions.length) * 100) + "%"}} /></div>
+                <h2>{questions[question]!.q}</h2>
+                {questions[question]!.a.map((answer, i) => <button key={answer} className={"quiz-answer" + (answers[question] === i ? " selected" : "")} onClick={() => setAnswers(values => { const nextAnswers = [...values]; nextAnswers[question] = i; return nextAnswers; })}><span className="quiz-letter">{String.fromCharCode(65 + i)}</span><span>{answer}</span>{answers[question] === i ? <Check size={16}/> : null}</button>)}
+                <div className="surface-actions"><button className="back-button" onClick={() => question === 0 ? setQuiz(false) : setQuestion(value => value - 1)}><ArrowLeft size={15}/> {question === 0 ? "Voltar" : "Anterior"}</button><button className="share-button" disabled={answers[question] === undefined} onClick={() => question === questions.length - 1 ? setDone(true) : setQuestion(value => value + 1)}>{question === questions.length - 1 ? "Ver resultado" : "Próxima pergunta"} <ArrowRight size={15}/></button></div>
+              </> : <div className="quiz-result"><span className="quiz-score">{score}<small> / 10</small></span><h2>{score >= 8 ? "Meta atingida!" : "Continue aprendendo."}</h2><p>{score >= 8 ? "Você mostrou que sabe como proteger o oceano. Leve esse cuidado para cada mergulho." : "Você precisa de 8 acertos para atingir a meta. Revise o diário e tente novamente."}</p><div className="surface-actions"><button className="back-button" onClick={() => {setQuiz(false); setDone(false); setQuestion(0); setAnswers([]);}}><ArrowLeft size={15}/> Voltar ao diário</button><button className="share-button" onClick={() => {setDone(false); setQuestion(0); setAnswers([]);}}>Refazer quiz <ArrowRight size={15}/></button></div></div>}
+            </div>
+            <div className="surface-actions"><button className="back-button" onClick={() => setQuiz(false)}><ArrowLeft size={15}/> Voltar à expedição</button></div>
+          </section>
+          <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span>QUIZ DE PRESERVAÇÃO MARINHA</span></footer>
+        </> : !surface ? <>
           <div className="chapter-bar">
             <span><Compass size={13} strokeWidth={1.5}/> PROBLEMAS DO OCEANO</span>
             
