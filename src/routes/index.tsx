@@ -200,8 +200,8 @@ function Index() {
       <div className="page-shell">
         <header className="masthead">
           <a className="wordmark" href="/" aria-label="Mar Sem Marcas — início">
+            <img className="brand-logo" src="/public/images/Emblema%20de%20Sa%C3%BAde%20e%20Ondas.png" alt="" />
             <span>mar sem marcas<span className="coral-dot">.</span></span>
-            
           </a>
           <div className="masthead-right"><span className="header-count">{surface ? "S / 05" : String(step + 1).padStart(2,"0") + " / 05"}</span></div>
         </header>
@@ -530,7 +530,21 @@ function Index() {
           .page-footer { padding-top:13px; }
           .footer-coords { font-size:6px; letter-spacing:.04em; }
         }
-        @media(max-height:760px) and (min-width:651px) {
+
+        /* 07 — LOGO E IMAGENS COM BORDAS SUAVES */
+        .wordmark { flex-direction:row; align-items:center; gap:13px; }
+        .brand-logo { display:block; width:46px; height:46px; flex:0 0 46px; object-fit:contain; border-radius:14px; }
+        .image-frame { overflow:hidden; border-radius:30px; isolation:isolate; }
+        .field-illustration { border-radius:30px; }
+        @media(max-width:650px) {
+          .wordmark { gap:10px; }
+          .brand-logo { width:38px; height:38px; flex-basis:38px; border-radius:12px; }
+          .wordmark > span { font-size:21px; }
+          .image-frame { border-radius:23px; }
+          .field-illustration { border-radius:23px; }
+        }
+
+                @media(max-height:760px) and (min-width:651px) {
           .expedition-layout { min-height:0; padding-top:26px; padding-bottom:22px; }
           .artwork { min-height:370px; }
           .field-illustration { max-height:420px; }
