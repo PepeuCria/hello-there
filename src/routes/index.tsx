@@ -116,7 +116,7 @@ function Index() {
   const [copied, setCopied] = useState(false);
   const touchStart = useRef<number | null>(null);
   const current = problems[step]!;
-  const theme = surface ? { background: "#F4F1EA", foreground: "#06232B", muted: "#49656A" } : current;
+  const theme = { background: "#F4F1EA", foreground: "#06232B", muted: "#49656A" };
 
   useEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -194,23 +194,22 @@ function Index() {
 
       <aside className="depth-ruler" aria-label={"Profundidade: " + (surface ? "superfície" : current.depth)}>
         <span className="ruler-label">PROFUNDIDADE</span>
-        <div className="ruler-track"><span className="ruler-marker" style={{ top: surface ? "0%" : (step / 4 * 100) + "%" }} /></div>
-        {[0,10,20,30].map((n) => <span className="ruler-tick" key={n} style={{ top: (n / 30 * 100) + "%" }}>{n} m</span>)}
+        <div className="ruler-track"><span className="ruler-marker" style={{ top: surface ? "0%" : (step / 4 * 100) + "%" }}><span>{surface ? "0 m" : current.depth}</span></span></div>
       </aside>
 
       <div className="page-shell">
         <header className="masthead">
           <a className="wordmark" href="/" aria-label="Mar Sem Marcas — início">
             <span>mar sem marcas<span className="coral-dot">.</span></span>
-            <small>DIÁRIO DE EXPEDIÇÃO · RECIFE, BRASIL</small>
+            
           </a>
-          <div className="masthead-right"><span className="status-dot" /> <span>REGISTRO DE CAMPO</span><span className="masthead-coords">08°03′S / 34°52′W</span></div>
+          <div className="masthead-right"><span className="header-count">{surface ? "S / 05" : String(step + 1).padStart(2,"0") + " / 05"}</span></div>
         </header>
 
         {!surface ? <>
           <div className="chapter-bar">
             <span><Compass size={13} strokeWidth={1.5}/> PROBLEMAS DO OCEANO</span>
-            <span className="chapter-count">{String(step + 1).padStart(2,"0")} <i>/</i> 05</span>
+            
           </div>
           <div className="progress-segments" aria-label={"Problema " + (step + 1) + " de 5"}>
             {problems.map((item, index) => <span key={item.plainTitle} className={index <= step ? "filled" : ""} />)}
@@ -237,13 +236,13 @@ function Index() {
                   <img src={current.image} alt={current.imageAlt} className="field-illustration" />
                   <div className="image-vignette" />
                 </div>
-                <div className="annotation"><span className="annotation-line" /><span>{current.annotation}</span></div>
+                
                 <div className="round-stamp" aria-label={current.stamp.replace("\n", " ")}>
                   <svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="stamp-circle" d="M60,60 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs><circle cx="60" cy="60" r="53"/><circle cx="60" cy="60" r="38"/><text><textPath href="#stamp-circle">PRESERVAR É DEIXAR LIVRE · MAR SEM MARCAS · </textPath></text></svg>
                   <Waves size={25} strokeWidth={1.2}/>
                   <small>{current.stamp.split("\n")[0]}</small>
                 </div>
-                <div className="artwork-caption"><span>FIG. 0{step + 1}</span><span>{current.coordinate}</span></div>
+                <div className="artwork-caption"><span>FIG. 0{step + 1}</span></div>
               </div>
               <p className="mobile-annotation">{current.annotation} <span>— {current.depth}</span></p>
             </div>
@@ -257,7 +256,7 @@ function Index() {
               <ArrowDownRight size={17}/>
             </button>
           </nav>
-          <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span>EXPLORE COM CUIDADO. DEIXE APENAS BOLHAS.</span></footer>
+          <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span className="footer-coords">{current.coordinate} · PROF. {current.depth}</span></footer>
         </> : <>
           <section className="surface-content">
             <p className="field-kicker"><span>REGISTRO CONCLUÍDO</span> / FIM DA EXPEDIÇÃO</p>
@@ -462,6 +461,83 @@ function Index() {
           *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
           .artwork { transform:none!important; }
         }
+
+        /* 06 — REFINO DE HIERARQUIA: menos ruído, mais respiro */
+        .expedition { --paper:#F4F1EA !important; --ink:#06232B !important; --muted:#49656A !important; }
+        .chart-grid { opacity:.02; mask-image:linear-gradient(90deg,black,transparent 16%,transparent 84%,black); }
+        .masthead { min-height:84px; border-bottom-color:rgba(6,35,43,.13); }
+        .wordmark { gap:0; }
+        .wordmark small { display:none; }
+        .masthead-right { color:rgba(6,35,43,.55); font-size:10px; letter-spacing:.12em; }
+        .header-count { font:500 10px var(--mono); letter-spacing:.12em; }
+        .chapter-bar { padding-top:20px; color:rgba(6,35,43,.48); font-size:8px; }
+        .chapter-bar svg { opacity:.65; }
+        .progress-segments { margin-top:8px; gap:4px; }
+        .progress-segments span { height:1px; background:rgba(6,35,43,.12); }
+        .progress-segments span.filled { background:var(--coral); }
+        .field-kicker { margin-bottom:20px; color:rgba(6,35,43,.5); font-size:8px; }
+        .field-kicker > span:first-child { display:inline-block; margin-right:7px; color:var(--coral); }
+        .expedition-copy h1 { font-size:clamp(2.4rem,4.5vw,4rem); line-height:1.08; max-width:560px; margin-bottom:24px; }
+        .expedition-copy .description { color:#344F54; line-height:1.85; }
+        .stat-card { margin-top:36px; padding:20px 22px; background:rgba(6,35,43,.035); }
+        .stat-label { color:rgba(6,35,43,.48); }
+        .field-note { margin-top:27px; color:#49656A; }
+        .coordinate-line { margin-top:34px; color:rgba(6,35,43,.46); }
+        .giant-number { display:none; }
+        .artwork { min-height:470px; overflow:visible; animation-duration:5.5s; }
+        .image-frame { width:100%; max-width:640px; margin:0 auto; filter:drop-shadow(0 20px 18px rgba(6,35,43,.10)); }
+        .field-illustration { max-height:540px; object-fit:contain; mix-blend-mode:multiply; }
+        .image-vignette { display:none; }
+        .round-stamp { width:82px; height:82px; left:0; bottom:3%; color:var(--coral); opacity:.9; }
+        .round-stamp svg { stroke-width:.65; }
+        .round-stamp small { display:none; }
+        .artwork-caption { right:0; bottom:-10px; color:rgba(6,35,43,.4); }
+        .mobile-annotation { display:none; }
+        .depth-ruler { width:24px; color:rgba(6,35,43,.5); }
+        .ruler-label,.ruler-tick { display:none; }
+        .ruler-track { left:10px; background:rgba(6,35,43,.22); }
+        .ruler-marker { left:-3px; width:7px; height:7px; border:1px solid var(--areia); }
+        .ruler-marker > span { position:absolute; left:12px; top:-5px; white-space:nowrap; color:rgba(6,35,43,.65); font:8px var(--mono); letter-spacing:.04em; }
+        .navigation { margin-top:18px; padding:27px 0 28px; border-top-color:rgba(6,35,43,.14); }
+        .back-button { color:rgba(6,35,43,.58); border-color:rgba(6,35,43,.22); }
+        .page-footer { color:rgba(6,35,43,.48); border-top-color:rgba(6,35,43,.12); }
+        .footer-coords { opacity:.4; font-size:7px; }
+        .surface-content { padding-top:50px; }
+        @media(max-width:900px) {
+          .expedition-layout { grid-template-columns:minmax(0,5fr) minmax(0,6fr); gap:30px; }
+          .artwork { min-height:400px; }
+          .image-frame { width:100%; margin:0 auto; }
+          .round-stamp { width:70px; height:70px; }
+        }
+        @media(max-width:650px) {
+          .page-shell { width:calc(100% - 42px); margin-left:30px; }
+          .masthead { min-height:72px; }
+          .wordmark > span { font-size:22px; }
+          .chapter-bar { padding-top:17px; }
+          .expedition-layout { padding:28px 0 18px; }
+          .expedition-copy h1 { font-size:clamp(2.4rem,10.5vw,3.4rem); line-height:1.08; margin-bottom:19px; max-width:100%; }
+          .expedition-copy .description { font-size:13px; line-height:1.8; }
+          .stat-card { margin-top:28px; padding:17px 18px; }
+          .field-note { margin-top:23px; }
+          .coordinate-line { margin-top:25px; }
+          .artwork { min-height:0; margin:22px 0 0; padding-bottom:18px; }
+          .image-frame { width:100%; max-width:430px; margin:0 auto; }
+          .field-illustration { max-height:340px; }
+          .round-stamp { width:62px; height:62px; left:0; bottom:5%; }
+          .artwork-caption { bottom:0; }
+          .navigation { margin-top:20px; padding:22px 0; }
+          .depth-ruler { top:34%; left:2px; height:32vh; min-height:180px; transform:scale(.72); }
+          .page-footer { padding-top:13px; }
+          .footer-coords { font-size:6px; letter-spacing:.04em; }
+        }
+        @media(max-height:760px) and (min-width:651px) {
+          .expedition-layout { min-height:0; padding-top:26px; padding-bottom:22px; }
+          .artwork { min-height:370px; }
+          .field-illustration { max-height:420px; }
+          .stat-card { margin-top:24px; }
+          .field-note { margin-top:18px; }
+        }
+
       `}</style>
     </main>
   );
