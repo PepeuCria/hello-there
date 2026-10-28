@@ -1,222 +1,454 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowRight, ChevronRight, Waves, Leaf, Fish, Recycle, ShieldCheck, Check, RotateCcw, CheckCircle2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowDownRight, ArrowLeft, ArrowRight, Check, Compass, Copy, Waves } from "lucide-react";
 
 export const Route = createFileRoute("/")({ component: Index });
 
+/* =========================================================
+   CONTEÚDO — edite este array para alterar os cinco capítulos.
+   ========================================================= */
 const problems = [
-  { title: "Não toque nos corais nem nos animais", text: "Muitos corais crescem apenas cerca de 1 cm por ano. Ao tocar ou quebrar um coral, um mergulhador pode danificar anos de crescimento. O contato também pode ferir ou estressar outros animais marinhos.", image: "/public/images/Mergulho consciente_ não toque nos corais.png", imageAlt: "Mergulho consciente: mantenha distância dos corais" },
-  { title: "Não alimente os peixes", text: "Quando recebem alimento de mergulhadores, os peixes podem mudar seus hábitos naturais de alimentação. Isso interfere em seu papel no ecossistema e pode desequilibrar a cadeia alimentar.", image: "/public/images/Não alimente os peixes marinhos.png", imageAlt: "Peixes marinhos que devem ser observados sem serem alimentados" },
-  { title: "Mantenha as nadadeiras longe do fundo", text: "Ao bater as nadadeiras no solo, o mergulhador levanta areia e sedimentos. Essas partículas podem cobrir organismos marinhos, prejudicar alguns habitats e reduzir a entrada de luz na água.", image: "/public/images/Não perturbe o fundo do mar.png", imageAlt: "Proteção do fundo do mar contra sedimentos levantados pelas nadadeiras" },
-  { title: "Controle a sua flutuabilidade", text: "Ajustar corretamente o colete equilibrador e o lastro ajuda a manter a estabilidade durante o mergulho. Sem esse controle, o mergulhador pode colidir com o fundo, quebrar corais e danificar habitats essenciais à vida marinha.", image: "/public/images/Flutuabilidade correta_ proteja o fundo do mar.png", imageAlt: "Mergulhador mantendo a flutuabilidade correta" },
-  { title: "Não toque nos naufrágios", text: "O contato frequente pode acelerar a degradação dos naufrágios. Essas estruturas também servem de abrigo e fixação para organismos marinhos; tocá-los pode danificar esses seres e perturbar seus habitats.", image: "/public/images/Não Toque no Naufrágio Corroído.png", imageAlt: "Naufrágio marinho que deve ser preservado sem contato" },
+  {
+    title: <>Não toque nos <em>corais</em> nem nos animais</>,
+    plainTitle: "Não toque nos corais nem nos animais",
+    kicker: "Vida recifal · observação sem contato",
+    text: "Um recife parece feito de pedra, mas está cheio de vida. Um toque pode ferir tecidos delicados, remover a camada protetora de um animal e aumentar o risco de doenças. Observe de perto — sem encostar.",
+    stat: "≈ 1 cm/ano",
+    statLabel: "crescimento de algumas espécies de coral",
+    depth: "05 m",
+    coordinate: "08°03′S 34°52′W",
+    annotation: "Acropora · crescimento lento",
+    image: "/public/images/Mergulho consciente_ não toque nos corais.png",
+    imageAlt: "Ilustração de mergulho consciente, mantendo distância dos corais",
+    stamp: "OBSERVE\nSEM TOCAR",
+    note: "Um segundo de contato pode apagar anos de crescimento.",
+    background: "#F4F1EA",
+    foreground: "#06232B",
+    muted: "#49656A",
+  },
+  {
+    title: <>Não alimente os <em>animais</em> marinhos</>,
+    plainTitle: "Não alimente os animais marinhos",
+    kicker: "Fauna · comportamento natural",
+    text: "Oferecer comida parece um gesto gentil, mas pode alterar a alimentação, aproximar animais de embarcações e aumentar a competição entre espécies. No mar, a melhor lembrança é deixar cada ser seguir seu próprio ritmo.",
+    stat: "0 ofertas",
+    statLabel: "de alimento durante o mergulho",
+    depth: "10 m",
+    coordinate: "08°04′S 34°51′W",
+    annotation: "Fauna livre · distância respeitosa",
+    image: "/public/images/Não alimente os peixes marinhos.png",
+    imageAlt: "Peixes marinhos observados sem serem alimentados",
+    stamp: "VIDA LIVRE\nVIDA SELVAGEM",
+    note: "A curiosidade não precisa virar interferência.",
+    background: "#DCE9E3",
+    foreground: "#06232B",
+    muted: "#3F6568",
+  },
+  {
+    title: <>Não deixe <em>plástico</em> para trás</>,
+    plainTitle: "Não deixe plástico para trás",
+    kicker: "Resíduos · impacto persistente",
+    text: "Embalagens e fragmentos podem permanecer no ambiente por muito tempo. Com o sol, as ondas e o desgaste, o plástico se divide em partículas menores que podem ser ingeridas por animais marinhos. Tudo o que desce com você precisa voltar com você.",
+    stat: "1 resíduo",
+    statLabel: "já é motivo para agir com responsabilidade",
+    depth: "15 m",
+    coordinate: "08°05′S 34°50′W",
+    annotation: "Microplásticos · partículas persistentes",
+    image: "/public/images/Não perturbe o fundo do mar.png",
+    imageAlt: "Ilustração sobre proteção do fundo do mar e do habitat marinho",
+    stamp: "TRAGA DE VOLTA\nNÃO DEIXE RASTRO",
+    note: "Pequenas escolhas também chegam ao oceano.",
+    background: "#A8C9C1",
+    foreground: "#06232B",
+    muted: "#244E54",
+  },
+  {
+    title: <>Mantenha a <em>flutuabilidade</em> sob controle</>,
+    plainTitle: "Mantenha a flutuabilidade sob controle",
+    kicker: "Técnica · mergulho de baixo impacto",
+    text: "Uma flutuabilidade estável ajuda você a passar pelo recife sem tocar no fundo, levantar sedimentos ou danificar organismos frágeis. Confira o lastro, ajuste o colete e pratique movimentos lentos antes de se aproximar da vida marinha.",
+    stat: "0 contatos",
+    statLabel: "meta de um mergulho consciente",
+    depth: "20 m",
+    coordinate: "08°06′S 34°49′W",
+    annotation: "Controle fino · nadadeiras longe do fundo",
+    image: "/public/images/Flutuabilidade correta_ proteja o fundo do mar.png",
+    imageAlt: "Mergulhador mantendo a flutuabilidade correta sobre o fundo do mar",
+    stamp: "MOVIMENTO\nCONSCIENTE",
+    note: "Controle é cuidado — para você e para o habitat.",
+    background: "#3D777B",
+    foreground: "#F4F1EA",
+    muted: "#D0E2DA",
+  },
+  {
+    title: <>Não deixe marcas nos <em>recifes</em> e naufrágios</>,
+    plainTitle: "Não deixe marcas nos recifes e naufrágios",
+    kicker: "Patrimônio submerso · mínimo impacto",
+    text: "Recifes e naufrágios são abrigo para muitas espécies e guardam histórias que não podem ser refeitas. Não ancore sobre corais, não retire objetos e não toque nas estruturas. Explore com respeito e deixe o lugar como encontrou.",
+    stat: "0 marcas",
+    statLabel: "o melhor vestígio da sua visita",
+    depth: "25 m",
+    coordinate: "08°07′S 34°48′W",
+    annotation: "Habitat compartilhado · não tocar",
+    image: "/public/images/Não Toque no Naufrágio Corroído.png",
+    imageAlt: "Naufrágio submerso que deve ser observado sem contato",
+    stamp: "PRESERVE\nO QUE ENCONTROU",
+    note: "A melhor lembrança é um lugar intacto.",
+    background: "#06232B",
+    foreground: "#F4F1EA",
+    muted: "#B4D0C8",
+  },
 ];
 
-const questions = [
-  { q: "Qual é a melhor atitude ao observar um coral durante um mergulho?", a: ["Tocar de leve para sentir a textura", "Manter distância e controlar a flutuabilidade", "Apoiar a nadadeira para tirar uma foto", "Levar um pequeno fragmento como lembrança"], correct: 1, why: "Corais são animais frágeis. Um toque pode danificar seus tecidos e aumentar o risco de doenças." },
-  { q: "Por que o plástico é um problema persistente no oceano?", a: ["Porque se dissolve instantaneamente", "Porque só afeta animais grandes", "Porque pode se fragmentar em microplásticos", "Porque transforma água salgada em doce"], correct: 2, why: "O plástico pode se fragmentar em partículas minúsculas que permanecem no ambiente e entram na cadeia alimentar." },
-  { q: "O que é branqueamento de corais?", a: ["Uma limpeza natural feita por peixes", "A perda das algas que vivem em parceria com o coral", "O crescimento acelerado dos recifes", "Uma camada de areia sobre o recife"], correct: 1, why: "O estresse, especialmente o calor excessivo, pode levar o coral a perder as algas que lhe dão cor e energia." },
-  { q: "Qual ação ajuda a reduzir o impacto climático?", a: ["Desperdiçar energia quando possível", "Queimar resíduos ao ar livre", "Reduzir desperdícios e emissões no dia a dia", "Descartar pilhas no lixo comum"], correct: 2, why: "Reduzir emissões e desperdícios ajuda a diminuir a pressão sobre o clima e os oceanos." },
-  { q: "O que significa pesca excessiva?", a: ["Pescar somente para alimentação", "Capturar peixes mais rápido do que as populações conseguem se recuperar", "Proteger áreas de reprodução", "Observar peixes sem capturá-los"], correct: 1, why: "Quando a captura supera a capacidade de reposição das espécies, populações e ecossistemas ficam ameaçados." },
-  { q: "Ao encontrar um animal marinho durante o mergulho, você deve…", a: ["Persegui-lo para conseguir uma foto", "Oferecer alimento", "Observar sem perseguir, tocar ou alimentar", "Bloquear sua passagem"], correct: 2, why: "Dar espaço aos animais evita estresse e permite que mantenham seu comportamento natural." },
-  { q: "Por que controlar a flutuabilidade é importante?", a: ["Só para economizar tempo", "Para evitar contato acidental com o fundo e os organismos", "Para nadar sempre mais rápido", "Para dispensar o planejamento do mergulho"], correct: 1, why: "Boa flutuabilidade ajuda a evitar impactos em corais, sedimentos e outros habitats." },
-  { q: "Como lidar com resíduos durante uma saída de mergulho?", a: ["Deixar na areia", "Enterrar o lixo", "Levar os resíduos de volta e descartá-los corretamente", "Jogar no mar se forem pequenos"], correct: 2, why: "Resíduos devem voltar com você e receber destinação adequada." },
-  { q: "O que uma área marinha protegida pode ajudar a preservar?", a: ["Apenas a cor da água", "Habitats, espécies e locais de reprodução", "Somente embarcações", "A poluição dentro de suas fronteiras"], correct: 1, why: "Áreas protegidas bem planejadas podem dar espaço para habitats e populações marinhas se recuperarem." },
-  { q: "Qual atitude combina com o Mar Sem Marcas?", a: ["Interagir com tudo", "Levar lembranças naturais", "Explorar com curiosidade, cuidado e impacto mínimo", "Priorizar fotos mesmo tocando no recife"], correct: 2, why: "A ideia é aproveitar o oceano com respeito à vida e aos ambientes marinhos." },
+const checklist = [
+  "Conferi meu equipamento e minha flutuabilidade",
+  "Vou manter distância dos corais e animais",
+  "Não vou alimentar a fauna nem retirar lembranças",
+  "Vou trazer de volta todos os meus resíduos",
+  "Vou respeitar o local, a equipe e os limites do mergulho",
 ];
 
 function Index() {
   const [step, setStep] = useState(0);
-  const [screen, setScreen] = useState<"problems" | "quiz">("problems");
-  const [animKey, setAnimKey] = useState(0);
-  const [question, setQuestion] = useState(0);
-  const [quizQuestions, setQuizQuestions] = useState(questions);
-  const [quizLoading, setQuizLoading] = useState(false);
-  const [quizError, setQuizError] = useState("");
-  const [answers, setAnswers] = useState<number[]>([]);
-  const [done, setDone] = useState(false);
-  const score = answers.reduce((total, answer, i) => total + (answer === quizQuestions[i]?.correct ? 1 : 0), 0);
+  const [surface, setSurface] = useState(false);
+  const [checked, setChecked] = useState<boolean[]>(checklist.map(() => false));
+  const [pledged, setPledged] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const touchStart = useRef<number | null>(null);
+  const current = problems[step]!;
+  const theme = surface ? { background: "#F4F1EA", foreground: "#06232B", muted: "#49656A" } : current;
 
-  // Baixa a próxima ilustração enquanto a pessoa lê a atual, evitando espera ao avançar.
   useEffect(() => {
-    const nextImage = problems[step + 1]?.image;
-    if (!nextImage) return;
-    const preload = new Image();
-    preload.decoding = "async";
-    preload.src = nextImage;
-  }, [step]);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const win = window as any;
+    const animate = () => {
+      if (win.gsap) {
+        win.gsap.fromTo(".expedition-copy > *", { y: 18, opacity: 0 }, { y: 0, opacity: 1, duration: .8, stagger: .09, ease: "power2.out", clearProps: "transform" });
+        win.gsap.fromTo(".artwork", { y: 14, opacity: 0, scale: .985 }, { y: 0, opacity: 1, scale: 1, duration: 1.1, ease: "expo.out", clearProps: "transform" });
+      }
+    };
+    if (!document.querySelector('script[data-gsap="expedition"]')) {
+      const script = document.createElement("script");
+      script.src = "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js";
+      script.dataset.gsap = "expedition";
+      script.onload = animate;
+      document.head.appendChild(script);
+    } else animate();
+    return () => {};
+  }, [step, surface]);
 
-  const moveTo = (next: number) => {
-    setAnimKey((key) => key + 1);
-    setStep(next);
-  };
-  const startQuiz = async () => {
-    setScreen("quiz");
-    setQuestion(0);
-    setAnswers([]);
-    setDone(false);
-    setQuizError("");
-    setQuizLoading(true);
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "ArrowRight" && !surface) { event.preventDefault(); next(); }
+      if (event.key === "ArrowLeft" && !surface) { event.preventDefault(); previous(); }
+      if (event.key === "Escape" && surface) setSurface(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [step, surface]);
+
+  function next() {
+    if (step < problems.length - 1) setStep((value) => value + 1);
+    else setSurface(true);
+  }
+  function previous() {
+    if (surface) { setSurface(false); return; }
+    setStep((value) => Math.max(0, value - 1));
+  }
+  async function share() {
+    const message = "Mar Sem Marcas — Preservar é deixar livre. Prometo não deixar marcas.";
     try {
-      const response = await fetch("/api/generate-quiz", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic: "preservação dos oceanos, mergulho responsável, biodiversidade marinha e poluição", count: 10 }),
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "Não foi possível gerar o quiz agora.");
-      if (!Array.isArray(payload.questions) || payload.questions.length !== 10) throw new Error("A IA retornou um quiz incompleto. Tente novamente.");
-      setQuizQuestions(payload.questions);
-    } catch (error) {
-      setQuizError(error instanceof Error ? error.message : "Erro ao conectar com a IA.");
-      setQuizQuestions(questions);
-    } finally {
-      setQuizLoading(false);
-    }
-  };
-  const selectAnswer = (choice: number) => {
-    const updated = [...answers];
-    updated[question] = choice;
-    setAnswers(updated);
-  };
-  const nextQuestion = () => {
-    if (question === quizQuestions.length - 1) setDone(true);
-    else setQuestion((q) => q + 1);
-  };
-  const resetQuiz = () => {
-    void startQuiz();
-  };
+      if (navigator.share) await navigator.share({ title: "Mar Sem Marcas", text: message });
+      else if (navigator.clipboard) { await navigator.clipboard.writeText(message); setCopied(true); window.setTimeout(() => setCopied(false), 2200); }
+    } catch { /* O usuário pode cancelar o compartilhamento sem erro visual. */ }
+  }
 
   return (
-    <main className="mar">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
-        :root { scroll-behavior:smooth; }
-        * { box-sizing:border-box; }
-        body { margin:0; background:#FAFCF9; }
-        .mar { min-height:100vh; background:#FAFCF9; color:#082F3A; font-family:'DM Sans',sans-serif; }
-        .mar button { font:inherit; cursor:pointer; }
-        .mar button:focus-visible { outline:3px solid #50B9AD; outline-offset:3px; }
-        .mar .primary:hover:not(:disabled) { background:#082F3A; transform:translateY(-1px); }
-        .mar .subtle:hover:not(:disabled) { background:#E8F4EF; border-color:#50B9AD; }
-        .mar button:disabled { cursor:not-allowed; opacity:.55; }
-        .mar .answer.selected { border-color:#126E75; background:#E8F4EF; color:#082F3A; }
-        .mar .answer:hover:not(.selected) { border-color:#50B9AD; background:#FAFCF9; }
-        .mar .shell { width:min(820px,calc(100% - 36px)); margin:0 auto; padding-bottom:88px; }
-        .mar .topbar { min-height:94px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #D7E8E4; padding:10px 2px; }
-        .mar .brand { display:flex; align-items:center; gap:12px; color:#082F3A; text-decoration:none; font:800 20px/1 'Manrope',sans-serif; letter-spacing:-.045em; }
-        .mar .brand-logo { display:block; width:84px; height:84px; object-fit:contain; flex:0 0 auto; }
-        .mar .brand-wordmark { display:flex; flex-direction:column; justify-content:center; gap:4px; }
-        .mar .brand-name { display:block; white-space:nowrap; }
-        .mar .brand-name span { color:#50B9AD; }
-        .mar .brand-caption { color:#52777A; font:600 9px/1.2 'DM Sans',sans-serif; letter-spacing:.16em; text-transform:uppercase; }
-        .mar .intro { padding:58px 0 26px; text-align:center; }
-        .mar .eyebrow { display:inline-flex; gap:8px; align-items:center; color:#126E75; font-size:10px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
-        .mar h1,.mar h2,.mar h3 { font-family:'Manrope',sans-serif; letter-spacing:-.055em; }
-        .mar .intro h1 { font-size:clamp(36px,6vw,58px); line-height:1.06; margin:15px 0 14px; }
-        .mar .intro p { max-width:500px; margin:0 auto; font-size:14px; line-height:1.8; color:#52777A; }
-        .mar .problem-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 0 14px; color:#126E75; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
-        .mar .progress-wrap { margin:0; }
-        .mar .progress-label { display:flex; justify-content:space-between; gap:12px; margin-bottom:9px; color:#52777A; font-size:10px; font-weight:700; }
-        .mar .progress { height:4px; border-radius:20px; background:#E8F4EF; overflow:hidden; }
-        .mar .progress span { display:block; height:100%; border-radius:20px; background:#126E75; transition:width .55s cubic-bezier(.2,.8,.2,1); }
-        .mar .problem-card { position:relative; overflow:hidden; min-height:0; padding:clamp(18px,3vw,30px) 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; animation:oceanReveal .45s cubic-bezier(.16,1,.3,1) both; }
-        @keyframes oceanReveal { 0% { opacity:.15; clip-path:inset(0 0 100% 0 round 27px); transform:translateY(22px) scale(.985); filter:blur(5px); } 55% { opacity:1; filter:blur(1px); } 100% { opacity:1; clip-path:inset(0 0 0 0 round 27px); transform:translateY(0) scale(1); filter:blur(0); } }
-        @keyframes arrive { from { opacity:0; transform:translateY(13px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
-        .mar .problem-top { display:flex; justify-content:space-between; align-items:center; }
-        .mar .problem-number { font:800 clamp(70px,12vw,112px)/.9 'Manrope',sans-serif; color:#082F3A; letter-spacing:-.09em; }
-        .mar .problem-symbol { display:grid; place-items:center; width:47px; height:47px; border-radius:16px; background:#E8F4EF; color:#50B9AD; }
-        .mar .problem-card h2 { max-width:610px; font-size:clamp(27px,4.5vw,40px); line-height:1.13; margin:22px 0 12px; }
-        .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#52777A; }
-        .mar .illustration-area { position:relative; width:100%; margin:18px 0 0; overflow:visible; border-radius:0; background:transparent; isolation:isolate; -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); }
-        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:auto; max-width:100%; object-fit:contain; object-position:center; animation:arrive .35s cubic-bezier(.16,1,.3,1) both; }
-        .mar .actions { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:20px 2px 0; }
-        .mar .subtle { border:1px solid #C7DCD7; background:#FFFFFF; color:#126E75; font-size:12px; padding:13px 18px; border-radius:999px; transition:background .2s,border-color .2s; }
-        .mar .subtle:hover { background:#E8F4EF; border-color:#50B9AD; }
-        .mar .subtle:disabled { opacity:.45; cursor:not-allowed; }
-        .mar .primary { display:inline-flex; justify-content:center; align-items:center; gap:10px; border:0; border-radius:999px; background:#126E75; color:white; padding:14px 21px; font-size:12px; font-weight:700; transition:transform .2s,background .2s; }
-        .mar .primary:hover { background:#082F3A; transform:translateY(-1px); }
-        .mar .primary:disabled { opacity:.45; cursor:not-allowed; transform:none; }
-        .mar .quiz-panel { margin:20px 0 60px; border:1px solid #D7E8E4; border-radius:25px; background:#FFFFFF; padding:clamp(22px,4vw,36px); animation:arrive .35s ease both; }
-        .mar .quiz-heading { display:flex; justify-content:space-between; align-items:center; gap:10px; color:#52777A; font-size:11px; margin-bottom:18px; }
-        .mar .quiz-panel h2 { font-size:clamp(22px,4vw,29px); line-height:1.3; margin:0 0 20px; }
-        .mar .answer { display:flex; align-items:center; gap:12px; width:100%; padding:13px; margin:8px 0; border:1px solid #D7E8E4; border-radius:13px; background:#FFFFFF; color:#082F3A; text-align:left; font-size:12px; line-height:1.5; }
-        .mar .answer:hover { border-color:#50B9AD; }
-        .mar .answer.selected { border-color:#126E75; background:#E8F4EF; }
-        .mar .letter { display:grid; place-items:center; flex:0 0 27px; width:27px; height:27px; border-radius:9px; background:#E8F4EF; font-size:10px; font-weight:800; }
-        .mar .answer.selected .letter { background:#126E75; color:#FFFFFF; }
-        .mar .quiz-bottom { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:23px; }
-        .mar .quiz-bottom small { color:#52777A; font-size:11px; }
-        .mar .result { text-align:center; padding:18px 0 8px; }
-        .mar .result-icon { display:grid; place-items:center; width:62px; height:62px; border-radius:21px; background:#E8F4EF; color:#126E75; margin:0 auto 17px; }
-        .mar .result h2 { margin:0 0 12px; font-size:30px; }
-        .mar .score { margin:10px 0; color:#126E75; font:800 50px 'Manrope',sans-serif; letter-spacing:-.06em; }
-        .mar .result p { color:#52777A; font-size:13px; line-height:1.8; }
-        @media(max-width:560px) {
-          .mar .topbar { min-height:80px; padding:8px 0; }
-          .mar .brand { gap:9px; font-size:17px; }
-          .mar .brand-logo { width:68px; height:68px; }
-          .mar .brand-caption { font-size:8px; letter-spacing:.12em; }
-          .mar .intro { padding:43px 0 20px; }
-          .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; }
-          .mar .problem-card h2 { margin-top:18px; }
-          .mar .problem-card p { font-size:14px; }
-          .mar .problem-number { font-size:76px; }
-          .mar .illustration-area { width:100%; height:auto; margin:18px 0 0; border-radius:0; background:transparent; }
-          .mar .actions { align-items:stretch; }
-          .mar .actions .primary { padding:13px 16px; }
-        }
-        @media(prefers-reduced-motion:reduce) { .mar *, .mar *:before, .mar *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
-      `}</style>
+    <main className={"expedition" + (surface ? " surface-screen" : "")} style={{ "--paper": theme.background, "--ink": theme.foreground, "--muted": theme.muted } as React.CSSProperties}
+      onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }}
+      onTouchEnd={(event) => {
+        if (touchStart.current === null) return;
+        const delta = (event.changedTouches[0]?.clientX ?? touchStart.current) - touchStart.current;
+        if (Math.abs(delta) > 65) { if (delta < 0) next(); else previous(); }
+        touchStart.current = null;
+      }}>
+      <div className="paper-noise" aria-hidden="true" />
+      <div className="chart-grid" aria-hidden="true" />
+      <div className="caustics" aria-hidden="true" />
+      <div className="plankton" aria-hidden="true"><i/><i/><i/><i/><i/><i/><i/></div>
 
-      <div className="shell">
-        <header className="topbar">
-          <a className="brand" href="/" aria-label="Mar Sem Marcas">
-            <img className="brand-logo" src="/public/images/Emblema%20de%20Sa%C3%BAde%20e%20Ondas.png?v=3" alt="Logo Mar Sem Marcas" />
-            <span className="brand-wordmark">
-              <span className="brand-name">mar sem marcas<span>.</span></span>
-              <span className="brand-caption">Preservar é deixar livre</span>
-            </span>
+      <aside className="depth-ruler" aria-label={"Profundidade: " + (surface ? "superfície" : current.depth)}>
+        <span className="ruler-label">PROFUNDIDADE</span>
+        <div className="ruler-track"><span className="ruler-marker" style={{ top: surface ? "0%" : (step / 4 * 100) + "%" }} /></div>
+        {[0,10,20,30].map((n) => <span className="ruler-tick" key={n} style={{ top: (n / 30 * 100) + "%" }}>{n} m</span>)}
+      </aside>
+
+      <div className="page-shell">
+        <header className="masthead">
+          <a className="wordmark" href="/" aria-label="Mar Sem Marcas — início">
+            <span>mar sem marcas<span className="coral-dot">.</span></span>
+            <small>DIÁRIO DE EXPEDIÇÃO · RECIFE, BRASIL</small>
           </a>
+          <div className="masthead-right"><span className="status-dot" /> <span>REGISTRO DE CAMPO</span><span className="masthead-coords">08°03′S / 34°52′W</span></div>
         </header>
 
-        {screen === "problems" ? <>
-          <div className="problem-heading"><span>Problemas do oceano</span><span>{String(step + 1).padStart(2,"0")} / 05</span></div>
-          <div className="progress-wrap"><div className="progress"><span style={{width:(((step+1)/problems.length)*100)+"%"}}/></div></div>
-          <article className="problem-card" key={animKey}>
-            <div className="problem-top">
-              <span className="problem-number">{step + 1}</span>
-              <span className="problem-symbol">{step===0?<Waves size={23}/>:step===1?<Recycle size={23}/>:step===2?<Fish size={23}/>:step===3?<ShieldCheck size={23}/>:<Leaf size={23}/>}</span>
-            </div>
-            <h2>{problems[step]!.title}</h2>
-            <p>{problems[step]!.text}</p>
-            <div className="illustration-area">
-              <img className="illustration-image" src={problems[step]!.image} alt={problems[step]!.imageAlt} loading="eager" fetchPriority="high" decoding="async" />
-            </div>
-          </article>
-          <div className="actions">
-            <button className="subtle" onClick={()=>moveTo(Math.max(0,step-1))} disabled={step===0}>← Voltar</button>
-            {step < problems.length - 1
-              ? <button className="primary" onClick={()=>moveTo(step+1)}>Próximo problema <ArrowRight size={15}/></button>
-              : <button className="primary" onClick={startQuiz}>Fazer o Quiz <ArrowRight size={15}/></button>}
+        {!surface ? <>
+          <div className="chapter-bar">
+            <span><Compass size={13} strokeWidth={1.5}/> PROBLEMAS DO OCEANO</span>
+            <span className="chapter-count">{String(step + 1).padStart(2,"0")} <i>/</i> 05</span>
           </div>
-        </> : <>
-          <section className="intro" style={{paddingBottom:12}}>
-            <span className="eyebrow"><CheckCircle2 size={13}/> Hora de testar o que aprendeu</span>
-            <h1>Fazer o Quiz</h1>
-            <p>Dez perguntas rápidas. Você precisa acertar pelo menos oito para atingir a meta.</p>
+          <div className="progress-segments" aria-label={"Problema " + (step + 1) + " de 5"}>
+            {problems.map((item, index) => <span key={item.plainTitle} className={index <= step ? "filled" : ""} />)}
+          </div>
+
+          <section className="expedition-layout" key={step}>
+            <div className="expedition-copy">
+              <p className="field-kicker"><span>NOTA {String(step + 1).padStart(2,"0")}</span> / {current.kicker}</p>
+              <h1>{current.title}</h1>
+              <p className="description">{current.text}</p>
+              <div className="stat-card">
+                <span className="stat-label">OBSERVAÇÃO DE CAMPO</span>
+                <strong>{current.stat}</strong>
+                <span>{current.statLabel}</span>
+              </div>
+              <div className="field-note"><span className="note-rule" /><span>{current.note}</span></div>
+              <div className="coordinate-line"><span>{current.coordinate}</span><span>PROF. {current.depth}</span></div>
+            </div>
+
+            <div className="artwork-column">
+              <div className="artwork">
+                <span className="giant-number" aria-hidden="true">{step + 1}</span>
+                <div className="image-frame">
+                  <img src={current.image} alt={current.imageAlt} className="field-illustration" />
+                  <div className="image-vignette" />
+                </div>
+                <div className="annotation"><span className="annotation-line" /><span>{current.annotation}</span></div>
+                <div className="round-stamp" aria-label={current.stamp.replace("\n", " ")}>
+                  <svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="stamp-circle" d="M60,60 m-43,0 a43,43 0 1,1 86,0 a43,43 0 1,1 -86,0"/></defs><circle cx="60" cy="60" r="53"/><circle cx="60" cy="60" r="38"/><text><textPath href="#stamp-circle">PRESERVAR É DEIXAR LIVRE · MAR SEM MARCAS · </textPath></text></svg>
+                  <Waves size={25} strokeWidth={1.2}/>
+                  <small>{current.stamp.split("\n")[0]}</small>
+                </div>
+                <div className="artwork-caption"><span>FIG. 0{step + 1}</span><span>{current.coordinate}</span></div>
+              </div>
+              <p className="mobile-annotation">{current.annotation} <span>— {current.depth}</span></p>
+            </div>
           </section>
-          <div className="quiz-panel" key={done?"result":"question-"+question}>
-            {quizLoading ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Preparando seu quiz...</h2><p>A IA está criando perguntas novas sobre a preservação dos oceanos.</p></div> : quizError ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Não foi possível conectar à IA</h2><p>{quizError}</p><button className="primary" onClick={()=>void startQuiz()}><RotateCcw size={15}/> Tentar novamente</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setQuizQuestions(questions);setQuizError("");setQuestion(0);setAnswers([]);setDone(false)}}>Usar quiz de reserva</button></div></div> : !done ? <>
-              <div className="quiz-heading"><span>PERGUNTA {String(question+1).padStart(2,"0")} / {quizQuestions.length}</span><span>{answers.filter(a=>a!==undefined).length} respondidas · IA</span></div>
-              <div className="progress" style={{marginBottom:24}}><span style={{width:(((question+1)/quizQuestions.length)*100)+"%"}}/></div>
-              <h2>{quizQuestions[question]!.q}</h2>
-              {quizQuestions[question]!.a.map((answer,i)=><button key={answer} className={"answer"+(answers[question]===i?" selected":"")} onClick={()=>selectAnswer(i)}><span className="letter">{String.fromCharCode(65+i)}</span><span>{answer}</span>{answers[question]===i&&<Check size={15} style={{marginLeft:"auto",flexShrink:0}}/>}</button>)}
-              <div className="quiz-bottom"><button className="subtle" onClick={()=>setScreen("problems")}>Voltar aos problemas</button><button className="primary" disabled={answers[question]===undefined} onClick={nextQuestion}>{question===quizQuestions.length-1?"Ver resultado":"Próxima pergunta"} <ChevronRight size={15}/></button></div>
-            </> : <div className="result"><div className="result-icon">{score>=8?<CheckCircle2 size={30}/>:<Waves size={30}/>}</div><span className="eyebrow">{score>=8?"Meta atingida":"Continue aprendendo"}</span><h2>{score>=8?"Mandou bem!":"Vamos tentar de novo?"}</h2><div className="score">{score}<span style={{fontSize:20,color:"#52777A"}}>/10</span></div><p>{score>=8?"Você acertou pelo menos oito perguntas. Leve esse cuidado para cada mergulho.":"Você precisa de 8 acertos para atingir a meta. Revise os temas e tente novamente."}</p><button className="primary" onClick={resetQuiz}><RotateCcw size={15}/> Refazer o quiz</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setScreen("problems");setStep(0);setAnimKey(k=>k+1)}}>Voltar aos problemas</button></div></div>}
-          </div>
+
+          <nav className="navigation" aria-label="Navegação entre problemas">
+            <button className="back-button" onClick={previous} disabled={step === 0}><ArrowLeft size={15}/> Voltar</button>
+            <span className="nav-hint">DESLIZE OU USE ← →</span>
+            <button className="next-button" onClick={next}>
+              {step === problems.length - 1 ? "Voltar à superfície" : "Descer mais fundo"}
+              <ArrowDownRight size={17}/>
+            </button>
+          </nav>
+          <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span>EXPLORE COM CUIDADO. DEIXE APENAS BOLHAS.</span></footer>
+        </> : <>
+          <section className="surface-content">
+            <p className="field-kicker"><span>REGISTRO CONCLUÍDO</span> / FIM DA EXPEDIÇÃO</p>
+            <h1>De volta à <em>superfície.</em></h1>
+            <p className="surface-intro">O oceano não precisa de lembranças nossas. Precisa de espaço para continuar sendo ele mesmo.</p>
+            <div className="pledge-card">
+              <div className="pledge-seal"><Waves size={30} strokeWidth={1.2}/><span>COMPROMISSO DE CAMPO</span></div>
+              <p>Eu escolho explorar com respeito.</p>
+              <h2>Prometo não deixar <em>marcas.</em></h2>
+              <button className={"pledge-button" + (pledged ? " pledged" : "")} onClick={() => setPledged(!pledged)} aria-pressed={pledged}>
+                {pledged ? <><Check size={16}/> Compromisso assumido</> : <>Assumir compromisso <ArrowRight size={16}/></>}
+              </button>
+            </div>
+            <div className="checklist">
+              <div className="checklist-heading"><span>CHECKLIST DE MERGULHO RESPONSÁVEL</span><span>{checked.filter(Boolean).length} / {checklist.length}</span></div>
+              {checklist.map((item, index) => <label className={"check-row" + (checked[index] ? " checked" : "")} key={item}>
+                <input type="checkbox" checked={checked[index]} onChange={(event) => setChecked((values) => values.map((value, i) => i === index ? event.target.checked : value))}/>
+                <span className="custom-check"><Check size={13}/></span><span>{item}</span>
+              </label>)}
+            </div>
+            <div className="surface-actions">
+              <button className="share-button" onClick={() => void share()}><Copy size={15}/>{copied ? "Mensagem copiada" : "Compartilhar compromisso"}</button>
+              <button className="back-button" onClick={() => { setStep(0); setSurface(false); }}><ArrowLeft size={15}/> Revisitar o diário</button>
+            </div>
+          </section>
+          <footer className="page-footer"><span>MAR SEM MARCAS <b>·</b> CADERNO 01</span><span>PRESERVAR É DEIXAR LIVRE.</span></footer>
         </>}
       </div>
+
+      <style>{`
+        /* 01 — TOKENS, PAPEL E BASE */
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+        :root { --areia:#F4F1EA; --abissal:#06232B; --teal:#0F6E78; --coral:#FF6B4A; --agua-rasa:#8FD3C7; --mono:'IBM Plex Mono',monospace; --serif:'Fraunces',Georgia,serif; --sans:'DM Sans',sans-serif; }
+        * { box-sizing:border-box; }
+        html { background:var(--areia); scroll-behavior:smooth; }
+        body { margin:0; }
+        button,input { font:inherit; }
+        button { cursor:pointer; }
+        button:focus-visible,a:focus-visible,input:focus-visible + .custom-check { outline:3px solid var(--coral); outline-offset:4px; }
+        .expedition { min-height:100svh; position:relative; overflow:hidden; isolation:isolate; background:var(--paper); color:var(--ink); font-family:var(--sans); transition:background-color 1s ease,color 1s ease; }
+        .paper-noise { position:absolute; inset:0; z-index:-2; opacity:.035; pointer-events:none; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E"); }
+        .chart-grid { position:absolute; inset:0; z-index:-3; pointer-events:none; opacity:.12; background-image:linear-gradient(to right,var(--muted) 1px,transparent 1px),linear-gradient(to bottom,var(--muted) 1px,transparent 1px); background-size:74px 74px; mask-image:linear-gradient(to bottom,black,transparent 90%); }
+        .caustics { position:absolute; z-index:-2; width:70vw; height:70vw; right:-24vw; top:8%; border-radius:50%; pointer-events:none; opacity:.06; background:repeating-conic-gradient(from 10deg,transparent 0deg 8deg,var(--agua-rasa) 9deg 10deg,transparent 12deg 22deg); filter:blur(14px); animation:caustic-drift 26s ease-in-out infinite alternate; }
+        @keyframes caustic-drift { to { transform:translate(-9vw,7vh) rotate(20deg) scale(1.12); } }
+        .plankton { position:absolute; inset:0; z-index:-1; pointer-events:none; overflow:hidden; }
+        .plankton i { position:absolute; width:3px; height:3px; border-radius:50%; background:var(--teal); opacity:.24; left:12%; bottom:-20px; animation:float-up 16s linear infinite; }
+        .plankton i:nth-child(2) { left:26%; animation-delay:-4s; animation-duration:20s; }
+        .plankton i:nth-child(3) { left:52%; animation-delay:-8s; animation-duration:17s; }
+        .plankton i:nth-child(4) { left:71%; animation-delay:-11s; animation-duration:22s; }
+        .plankton i:nth-child(5) { left:88%; animation-delay:-3s; animation-duration:19s; }
+        .plankton i:nth-child(6) { left:43%; animation-delay:-14s; animation-duration:23s; width:2px;height:2px; }
+        .plankton i:nth-child(7) { left:63%; animation-delay:-6s; animation-duration:18s; width:4px;height:4px; }
+        @keyframes float-up { 0% { transform:translate3d(0,0,0); } 50% { transform:translate3d(28px,-50vh,0); } 100% { transform:translate3d(-12px,-110vh,0); } }
+
+        /* 02 — LAYOUT E METADADOS DE CARTA NÁUTICA */
+        .page-shell { width:min(1320px,calc(100% - 112px)); margin:0 auto; position:relative; }
+        .masthead { min-height:100px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid color-mix(in srgb,var(--muted) 27%,transparent); }
+        .wordmark { text-decoration:none; color:var(--ink); display:flex; flex-direction:column; gap:7px; }
+        .wordmark > span { font:600 25px/.95 var(--serif); letter-spacing:-.055em; }
+        .coral-dot { color:var(--coral); }
+        .wordmark small,.masthead-right,.chapter-bar,.field-kicker,.stat-label,.coordinate-line,.artwork-caption,.round-stamp small,.page-footer,.nav-hint,.checklist-heading { font:500 9px/1.5 var(--mono); letter-spacing:.14em; text-transform:uppercase; }
+        .wordmark small { color:var(--muted); font-size:8px; letter-spacing:.17em; }
+        .masthead-right { display:flex; align-items:center; gap:9px; color:var(--muted); font-size:8px; }
+        .status-dot { width:6px;height:6px;border-radius:50%;background:var(--coral); box-shadow:0 0 0 4px color-mix(in srgb,var(--coral) 13%,transparent); }
+        .masthead-coords { margin-left:17px; padding-left:17px; border-left:1px solid color-mix(in srgb,var(--muted) 35%,transparent); }
+        .chapter-bar { display:flex; align-items:center; justify-content:space-between; padding-top:25px; color:var(--muted); }
+        .chapter-bar > span:first-child { display:flex; align-items:center; gap:9px; }
+        .chapter-count { color:var(--ink); font-size:11px; }
+        .chapter-count i { color:var(--coral); font-style:normal; margin:0 3px; }
+        .progress-segments { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin-top:12px; }
+        .progress-segments span { height:2px; background:color-mix(in srgb,var(--muted) 25%,transparent); transition:background .6s ease; }
+        .progress-segments span.filled { background:var(--coral); }
+
+        /* 03 — COMPONENTES DO DIÁRIO */
+        .expedition-layout { display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); gap:clamp(28px,5.5vw,88px); align-items:center; min-height:min(650px,calc(100svh - 240px)); padding:42px 0 32px; }
+        .expedition-copy { position:relative; z-index:2; max-width:490px; }
+        .field-kicker { color:var(--muted); font-size:9px; letter-spacing:.1em; margin:0 0 23px; }
+        .field-kicker span { color:var(--coral); }
+        .expedition-copy h1,.surface-content h1 { font:400 clamp(43px,5.2vw,76px)/.99 var(--serif); letter-spacing:-.055em; margin:0 0 23px; max-width:560px; }
+        .expedition-copy h1 em,.surface-content h1 em,.pledge-card h2 em { color:var(--teal); font-weight:400; }
+        .expedition-copy .description { max-width:420px; font-size:14px; line-height:1.9; color:var(--muted); margin:0; }
+        .stat-card { margin-top:30px; padding:17px 20px 18px; border-left:2px solid var(--coral); background:color-mix(in srgb,var(--paper) 83%,var(--muted) 17%); display:flex; flex-direction:column; align-items:flex-start; gap:4px; max-width:310px; }
+        .stat-label { font-size:8px; color:var(--muted); }
+        .stat-card strong { color:var(--ink); font:500 clamp(29px,3.5vw,43px)/1.15 var(--serif); letter-spacing:-.04em; }
+        .stat-card > span:last-child { font-size:11px; color:var(--muted); line-height:1.5; }
+        .field-note { display:flex; align-items:center; gap:12px; margin-top:22px; color:var(--muted); font:italic 12px/1.5 var(--serif); }
+        .note-rule { width:25px;height:1px;background:var(--coral); flex:0 0 auto; }
+        .coordinate-line { display:flex; gap:22px; margin-top:30px; padding-top:14px; border-top:1px solid color-mix(in srgb,var(--muted) 25%,transparent); color:var(--muted); font-size:8px; }
+        .artwork-column { min-width:0; }
+        .artwork { position:relative; min-height:480px; display:flex; align-items:center; justify-content:center; animation:art-float 5.5s ease-in-out infinite; }
+        @keyframes art-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+        .giant-number { position:absolute; z-index:0; left:-7%; top:-11%; font:500 clamp(170px,22vw,320px)/.9 var(--serif); letter-spacing:-.1em; color:transparent; -webkit-text-stroke:1px color-mix(in srgb,var(--muted) 42%,transparent); opacity:.6; user-select:none; }
+        .image-frame { position:relative; z-index:1; width:112%; margin-right:-12%; filter:drop-shadow(0 24px 20px rgba(6,35,43,.12)); }
+        .field-illustration { display:block; width:100%; height:auto; max-height:590px; object-fit:contain; mix-blend-mode:multiply; }
+        .expedition[style*="#06232B"] .field-illustration { mix-blend-mode:normal; }
+        .image-vignette { position:absolute; inset:0; pointer-events:none; background:linear-gradient(90deg,var(--paper) 0%,transparent 13%,transparent 85%,var(--paper) 100%); opacity:.12; }
+        .annotation { position:absolute; z-index:3; top:18%; right:-4%; display:flex; align-items:center; gap:10px; color:var(--ink); font:italic 12px var(--serif); }
+        .annotation-line { display:block; width:60px; height:1px; background:var(--coral); transform:rotate(-16deg); transform-origin:right; }
+        .round-stamp { position:absolute; z-index:4; left:2%; bottom:7%; width:110px; height:110px; display:grid; place-items:center; color:var(--teal); transform:rotate(-12deg); }
+        .round-stamp svg { position:absolute; inset:0; width:100%; height:100%; overflow:visible; fill:none; stroke:currentColor; stroke-width:.8; }
+        .round-stamp svg text { fill:currentColor; stroke:none; font:6.6px var(--mono); letter-spacing:1.3px; }
+        .round-stamp small { position:absolute; bottom:23px; font-size:6px; letter-spacing:.1em; text-align:center; }
+        .artwork-caption { position:absolute; right:-1%; bottom:0; display:flex; gap:16px; color:var(--muted); font-size:8px; }
+        .artwork-caption span:first-child { color:var(--coral); }
+        .mobile-annotation { display:none; }
+        .navigation { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 0 25px; border-top:1px solid color-mix(in srgb,var(--muted) 25%,transparent); }
+        .back-button,.next-button,.share-button,.pledge-button { display:inline-flex; align-items:center; justify-content:center; gap:12px; min-height:48px; border:1px solid transparent; padding:0 18px; transition:background .25s,color .25s,border-color .25s,transform .25s; }
+        .back-button { color:var(--ink); background:transparent; border-color:color-mix(in srgb,var(--muted) 32%,transparent); font-size:12px; }
+        .back-button:disabled { opacity:.35; cursor:not-allowed; }
+        .back-button:not(:disabled):hover { background:color-mix(in srgb,var(--paper) 70%,var(--muted) 30%); border-color:var(--teal); }
+        .next-button,.share-button,.pledge-button { color:#F4F1EA; background:var(--teal); font-size:12px; font-weight:600; }
+        .next-button svg { transition:transform .25s ease; }
+        .next-button:hover { background:var(--abissal); transform:translateY(-2px); }
+        .next-button:hover svg { transform:translate(3px,-3px); }
+        .next-button:active,.share-button:active,.pledge-button:active { transform:scale(.98); }
+        .nav-hint { color:var(--muted); font-size:8px; }
+        .page-footer { display:flex; justify-content:space-between; gap:20px; padding:18px 0 24px; border-top:1px solid color-mix(in srgb,var(--muted) 22%,transparent); color:var(--muted); font-size:8px; }
+        .page-footer b { color:var(--coral); }
+
+        /* 04 — SUPERFÍCIE, CHECKLIST E COMPROMISSO */
+        .surface-content { width:min(760px,100%); margin:0 auto; padding:64px 0 70px; }
+        .surface-content h1 { font-size:clamp(52px,7vw,88px); max-width:650px; }
+        .surface-intro { color:var(--muted); font-size:15px; line-height:1.8; max-width:520px; }
+        .pledge-card { margin:38px 0; padding:clamp(24px,5vw,48px); border:1px solid color-mix(in srgb,var(--muted) 30%,transparent); position:relative; text-align:center; background:color-mix(in srgb,var(--paper) 85%,white 15%); }
+        .pledge-seal { display:flex; flex-direction:column; align-items:center; gap:9px; color:var(--teal); }
+        .pledge-seal span { font:500 8px var(--mono); letter-spacing:.16em; }
+        .pledge-card > p { margin:27px 0 10px; color:var(--muted); font:italic 16px var(--serif); }
+        .pledge-card h2 { font:400 clamp(30px,5vw,46px)/1.1 var(--serif); margin:0 auto 24px; letter-spacing:-.04em; }
+        .pledge-button { min-height:46px; }
+        .pledge-button:hover { background:var(--abissal); }
+        .pledge-button.pledged { background:var(--abissal); }
+        .checklist { margin:38px 0; }
+        .checklist-heading { display:flex; justify-content:space-between; gap:10px; padding-bottom:14px; border-bottom:1px solid color-mix(in srgb,var(--muted) 35%,transparent); color:var(--muted); font-size:8px; }
+        .checklist-heading span:last-child { color:var(--coral); }
+        .check-row { display:flex; align-items:center; gap:13px; min-height:56px; border-bottom:1px solid color-mix(in srgb,var(--muted) 22%,transparent); font-size:13px; color:var(--ink); cursor:pointer; }
+        .check-row input { position:absolute; opacity:0; width:1px;height:1px; }
+        .custom-check { display:grid; place-items:center; flex:0 0 19px; width:19px;height:19px; border:1px solid color-mix(in srgb,var(--muted) 55%,transparent); color:transparent; transition:all .2s; }
+        .check-row.checked .custom-check { background:var(--teal); border-color:var(--teal); color:white; }
+        .check-row.checked > span:last-child { color:var(--muted); text-decoration:line-through; text-decoration-color:var(--coral); }
+        .surface-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+        .share-button { background:var(--abissal); }
+        .share-button:hover { background:var(--teal); }
+        .surface-screen .depth-ruler { opacity:.45; }
+        .depth-ruler { position:fixed; z-index:5; top:27%; left:22px; height:44vh; min-height:260px; width:34px; color:var(--muted); font:8px var(--mono); transition:opacity .4s; }
+        .ruler-label { position:absolute; top:-24px; left:0; writing-mode:vertical-rl; transform:rotate(180deg); font-size:7px; letter-spacing:.12em; }
+        .ruler-track { position:absolute; top:0; left:15px; height:100%; width:1px; background:color-mix(in srgb,var(--muted) 40%,transparent); }
+        .ruler-marker { position:absolute; left:-4px; width:9px;height:9px; border-radius:50%; background:var(--coral); border:2px solid var(--paper); transition:top .7s cubic-bezier(.2,.8,.2,1); }
+        .ruler-tick { position:absolute; left:21px; transform:translateY(-50%); white-space:nowrap; }
+
+        /* 05 — MOBILE-FIRST ADAPTATION AND ACCESSIBILITY */
+        @media(max-width:900px) {
+          .page-shell { width:calc(100% - 76px); }
+          .depth-ruler { left:9px; transform:scale(.85); transform-origin:left center; }
+          .expedition-layout { gap:25px; grid-template-columns:minmax(0,5fr) minmax(0,6fr); }
+          .artwork { min-height:410px; }
+          .annotation { right:-7%; }
+          .annotation-line { width:35px; }
+        }
+        @media(max-width:650px) {
+          .page-shell { width:calc(100% - 38px); margin-left:29px; }
+          .masthead { min-height:80px; }
+          .wordmark > span { font-size:22px; }
+          .wordmark small { font-size:7px; }
+          .masthead-right { font-size:0; gap:0; }
+          .masthead-coords { display:none; }
+          .status-dot { width:7px;height:7px; }
+          .chapter-bar { padding-top:20px; font-size:8px; }
+          .expedition-layout { display:flex; flex-direction:column; align-items:stretch; gap:0; min-height:0; padding:34px 0 20px; }
+          .expedition-copy { max-width:none; }
+          .field-kicker { margin-bottom:18px; font-size:8px; }
+          .expedition-copy h1 { font-size:clamp(44px,12vw,65px); margin-bottom:18px; max-width:520px; }
+          .expedition-copy .description { font-size:13px; line-height:1.8; }
+          .stat-card { margin-top:22px; padding:14px 17px; max-width:100%; }
+          .stat-card strong { font-size:34px; }
+          .field-note { margin-top:15px; }
+          .coordinate-line { margin-top:20px; }
+          .artwork { min-height:0; margin:14px -8px 0; animation-duration:6s; }
+          .giant-number { top:-3%; left:0; font-size:clamp(145px,48vw,235px); }
+          .image-frame { width:109%; margin-right:-9%; }
+          .field-illustration { max-height:390px; }
+          .annotation { display:none; }
+          .round-stamp { width:88px;height:88px; left:3%; bottom:8%; }
+          .round-stamp small { bottom:18px; font-size:5px; }
+          .artwork-caption { right:2%; bottom:0; font-size:7px; }
+          .mobile-annotation { display:block; margin:10px 0 0; color:var(--muted); font:italic 12px var(--serif); }
+          .mobile-annotation span { font:8px var(--mono); text-transform:uppercase; }
+          .navigation { margin-top:23px; padding:17px 0 21px; gap:8px; }
+          .back-button,.next-button { min-height:45px; padding:0 12px; gap:7px; font-size:11px; }
+          .nav-hint { display:none; }
+          .page-footer { font-size:7px; gap:10px; }
+          .page-footer span:last-child { text-align:right; max-width:45%; }
+          .depth-ruler { top:33%; height:36vh; min-height:210px; transform:scale(.68); left:3px; }
+          .surface-content { padding:45px 0 50px; }
+          .surface-content h1 { font-size:clamp(49px,13vw,72px); }
+          .surface-intro { font-size:14px; }
+          .pledge-card { margin:28px 0; padding:28px 18px; }
+          .check-row { font-size:12px; line-height:1.45; padding:10px 0; }
+          .surface-actions { flex-direction:column; }
+          .surface-actions button { width:100%; }
+        }
+        @media(prefers-reduced-motion:reduce) {
+          *,*::before,*::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+          .artwork { transform:none!important; }
+        }
+      `}</style>
     </main>
   );
 }
