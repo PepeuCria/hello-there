@@ -38,7 +38,7 @@ export const Route = createFileRoute("/api/generate-quiz")({
                 {
                   role: "system",
                   content:
-                    "Você cria quizzes educativos em português brasileiro. Retorne apenas JSON válido no formato {\\"questions\\":[{\\"q\\":string,\\"a\\":[string,string,string,string],\\"correct\\":number de 0 a 3,\\"why\\":string}]}. Cada questão deve ter exatamente quatro alternativas plausíveis, uma única correta e uma explicação curta e factual. Varie os temas e não repita perguntas.",
+                    "Você cria quizzes educativos em português brasileiro. Retorne apenas um objeto JSON com a propriedade questions, um array de objetos com os campos q (string), a (array com quatro strings), correct (índice numérico de 0 a 3) e why (string). Cada questão deve ter exatamente quatro alternativas plausíveis, uma única correta e uma explicação curta e factual. Varie os temas e não repita perguntas.",
                 },
                 {
                   role: "user",
