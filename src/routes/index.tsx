@@ -120,8 +120,11 @@ function Index() {
   const [quiz, setQuiz] = useState(false);
   const [question, setQuestion] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
+  const [quizQuestions, setQuizQuestions] = useState(questions);
+  const [quizLoading, setQuizLoading] = useState(false);
+  const [quizError, setQuizError] = useState("");
   const [done, setDone] = useState(false);
-  const score = answers.reduce((total, answer, i) => total + (answer === questions[i]?.correct ? 1 : 0), 0);
+  const score = answers.reduce((total, answer, i) => total + (answer === quizQuestions[i]?.correct ? 1 : 0), 0);
   const touchStart = useRef<number | null>(null);
   const current = problems[step]!;
   const theme = { background: "#F4F1EA", foreground: "#06232B", muted: "#49656A" };
@@ -180,6 +183,36 @@ function Index() {
     setStep((value) => Math.max(0, value - 1));
   }
 
+  async function startQuiz() {
+    setQuiz(true);
+    setQuestion(0);
+    setAnswers([]);
+    setDone(false);
+    setQuizError("");
+    setQuizLoading(true);
+    try {
+      const response = await fetch("/api/generate-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: problems.map((problem) => problem.plainTitle + ": " + problem.text).join("\\n"),
+          count: 10,
+        }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Não foi possível gerar o quiz agora.");
+      if (!Array.isArray(payload.questions) || payload.questions.length !== 10) {
+        throw new Error("A IA retornou um quiz incompleto. Tente novamente.");
+      }
+      setQuizQuestions(payload.questions);
+    } catch (error) {
+      setQuizError(error instanceof Error ? error.message : "Erro ao conectar com a IA.");
+      setQuizQuestions(questions);
+    } finally {
+      setQuizLoading(false);
+    }
+  }
+
   return (
     <main className={"expedition" + (surface ? " surface-screen" : "")} style={{ "--paper": theme.background, "--ink": theme.foreground, "--muted": theme.muted } as CSSProperties}
       onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }}
@@ -212,15 +245,17 @@ function Index() {
           <section className="surface-content quiz-content">
             <p className="field-kicker"><span>TESTE DE CONHECIMENTO</span> / QUIZ DO OCEANO</p>
             <h1>O que você <em>aprendeu?</em></h1>
-            <p className="surface-intro">Responda às 10 perguntas sobre preservação marinha. A meta é acertar pelo menos 8.</p>
+            <p className="surface-intro">A IA cria perguntas novas com base nos problemas que você acabou de ler. A meta é acertar pelo menos 8.</p>
+            {quizError ? <p className="quiz-error" role="status">{quizError} O quiz de reserva foi carregado para você não ficar sem jogar.</p> : null}
             <div className="quiz-panel">
-              {!done ? <>
-                <div className="checklist-heading"><span>PERGUNTA {String(question + 1).padStart(2, "0")} / {questions.length}</span><span>{answers.filter(a => a !== undefined).length} respondidas</span></div>
-                <div className="quiz-progress"><span style={{width: (((question + 1) / questions.length) * 100) + "%"}} /></div>
-                <h2>{questions[question]!.q}</h2>
-                {questions[question]!.a.map((answer, i) => <button key={answer} className={"quiz-answer" + (answers[question] === i ? " selected" : "")} onClick={() => setAnswers(values => { const nextAnswers = [...values]; nextAnswers[question] = i; return nextAnswers; })}><span className="quiz-letter">{String.fromCharCode(65 + i)}</span><span>{answer}</span>{answers[question] === i ? <Check size={16}/> : null}</button>)}
-                <div className="surface-actions"><button className="back-button" onClick={() => question === 0 ? setQuiz(false) : setQuestion(value => value - 1)}><ArrowLeft size={15}/> {question === 0 ? "Voltar" : "Anterior"}</button><button className="share-button" disabled={answers[question] === undefined} onClick={() => question === questions.length - 1 ? setDone(true) : setQuestion(value => value + 1)}>{question === questions.length - 1 ? "Ver resultado" : "Próxima pergunta"} <ArrowRight size={15}/></button></div>
-              </> : <div className="quiz-result"><span className="quiz-score">{score}<small> / 10</small></span><h2>{score >= 8 ? "Meta atingida!" : "Continue aprendendo."}</h2><p>{score >= 8 ? "Você mostrou que sabe como proteger o oceano. Leve esse cuidado para cada mergulho." : "Você precisa de 8 acertos para atingir a meta. Revise o diário e tente novamente."}</p><div className="surface-actions"><button className="back-button" onClick={() => {setQuiz(false); setDone(false); setQuestion(0); setAnswers([]);}}><ArrowLeft size={15}/> Voltar ao diário</button><button className="share-button" onClick={() => {setDone(false); setQuestion(0); setAnswers([]);}}>Refazer quiz <ArrowRight size={15}/></button></div></div>}
+              {quizLoading ? <div className="quiz-loading"><Waves size={28}/><h2>Preparando seu quiz...</h2><p>A inteligência artificial está criando perguntas novas com base nos problemas lidos.</p></div> : !done ? <>
+                <div className="checklist-heading"><span>PERGUNTA {String(question + 1).padStart(2, "0")} / {quizQuestions.length}</span><span>{answers.filter(a => a !== undefined).length} respondidas</span></div>
+                <div className="quiz-progress"><span style={{width: (((question + 1) / quizQuestions.length) * 100) + "%"}} /></div>
+                <h2>{quizQuestions[question]!.q}</h2>
+                {quizQuestions[question]!.a.map((answer, i) => <button key={answer} className={"quiz-answer" + (answers[question] === i ? " selected" : "")} onClick={() => setAnswers(values => { const nextAnswers = [...values]; nextAnswers[question] = i; return nextAnswers; })}><span className="quiz-letter">{String.fromCharCode(65 + i)}</span><span>{answer}</span>{answers[question] === i ? <Check size={16}/> : null}</button>)}
+                {answers[question] !== undefined ? <p className="quiz-explanation">{answers[question] === quizQuestions[question]!.correct ? "Correto! " : "Ainda não. "} {quizQuestions[question]!.why}</p> : null}
+                <div className="surface-actions"><button className="back-button" onClick={() => question === 0 ? setQuiz(false) : setQuestion(value => value - 1)}><ArrowLeft size={15}/> {question === 0 ? "Voltar" : "Anterior"}</button><button className="share-button" disabled={answers[question] === undefined} onClick={() => question === quizQuestions.length - 1 ? setDone(true) : setQuestion(value => value + 1)}>{question === quizQuestions.length - 1 ? "Ver resultado" : "Próxima pergunta"} <ArrowRight size={15}/></button></div>
+              </> : <div className="quiz-result"><span className="quiz-score">{score}<small> / 10</small></span><h2>{score >= 8 ? "Meta atingida!" : "Continue aprendendo."}</h2><p>{score >= 8 ? "Você mostrou que sabe como proteger o oceano. Leve esse cuidado para cada mergulho." : "Você precisa de 8 acertos para atingir a meta. Revise o diário e tente novamente."}</p><div className="surface-actions"><button className="back-button" onClick={() => {setQuiz(false); setDone(false); setQuestion(0); setAnswers([]);}}><ArrowLeft size={15}/> Voltar ao diário</button><button className="share-button" onClick={() => void startQuiz()}>Refazer quiz <ArrowRight size={15}/></button></div></div>}
             </div>
             <div className="surface-actions"><button className="back-button" onClick={() => setQuiz(false)}><ArrowLeft size={15}/> Voltar à expedição</button></div>
           </section>
@@ -282,7 +317,7 @@ function Index() {
             <h1>Agora, teste o que <em>aprendeu.</em></h1>
             <p className="surface-intro">Você terminou de ler os cinco problemas do oceano. Quando estiver pronto, faça o quiz para testar seus conhecimentos sobre preservação marinha.</p>
             <div className="surface-actions">
-              <button className="share-button" onClick={() => { setQuiz(true); setQuestion(0); setAnswers([]); setDone(false); }}><Waves size={15}/> Fazer o quiz <ArrowRight size={16}/></button>
+              <button className="share-button" onClick={() => void startQuiz()}><Waves size={15}/> Fazer o quiz <ArrowRight size={16}/></button>
               <button className="back-button" onClick={() => { setStep(0); setSurface(false); }}><ArrowLeft size={15}/> Revisitar os problemas</button>
             </div>
           </section>
@@ -403,6 +438,10 @@ function Index() {
         .custom-check { display:grid; place-items:center; flex:0 0 19px; width:19px;height:19px; border:1px solid color-mix(in srgb,var(--muted) 55%,transparent); color:transparent; transition:all .2s; }
         .check-row.checked .custom-check { background:var(--teal); border-color:var(--teal); color:white; }
         .check-row.checked > span:last-child { color:var(--muted); text-decoration:line-through; text-decoration-color:var(--coral); }
+        .quiz-error { padding:12px 15px; border:1px solid color-mix(in srgb,var(--coral) 45%,transparent); color:var(--ink); font-size:13px; line-height:1.6; }
+        .quiz-loading { padding:32px 8px; text-align:center; color:var(--muted); }
+        .quiz-loading h2 { color:var(--ink); }
+        .quiz-explanation { margin-top:16px; padding:14px 16px; border-left:2px solid var(--teal); background:color-mix(in srgb,var(--teal) 7%,transparent); font-size:13px; line-height:1.7; }
         .quiz-panel { margin:28px 0; padding:clamp(20px,4vw,34px); border:1px solid color-mix(in srgb,var(--muted) 28%,transparent); background:color-mix(in srgb,var(--paper) 90%,white 10%); }
         .quiz-progress { height:3px; margin:18px 0 28px; background:color-mix(in srgb,var(--muted) 20%,transparent); }
         .quiz-progress span { display:block; height:100%; background:var(--coral); transition:width .3s ease; }
