@@ -123,7 +123,12 @@ const checklist = [
 
 function Index() {
   const [step, setStep] = useState(0);
-  const [surface, setSurface] = useState(false);\n  const [quiz, setQuiz] = useState(false);\n  const [question, setQuestion] = useState(0);\n  const [answers, setAnswers] = useState<number[]>([]);\n  const [done, setDone] = useState(false);\n  const score = answers.reduce((total, answer, i) => total + (answer === questions[i]?.correct ? 1 : 0), 0);
+  const [surface, setSurface] = useState(false);
+  const [quiz, setQuiz] = useState(false);
+  const [question, setQuestion] = useState(0);
+  const [answers, setAnswers] = useState<number[]>([]);
+  const [done, setDone] = useState(false);
+  const score = answers.reduce((total, answer, i) => total + (answer === questions[i]?.correct ? 1 : 0), 0);
   const [checked, setChecked] = useState<boolean[]>(checklist.map(() => false));
   const [pledged, setPledged] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -169,7 +174,8 @@ function Index() {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "ArrowRight" && !surface && !quiz) { event.preventDefault(); next(); }
       if (event.key === "ArrowLeft" && !surface && !quiz) { event.preventDefault(); previous(); }
-      if (event.key === "Escape" && quiz) setQuiz(false);\n      if (event.key === "Escape" && surface && !quiz) setSurface(false);
+      if (event.key === "Escape" && quiz) setQuiz(false);
+      if (event.key === "Escape" && surface && !quiz) setSurface(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -308,7 +314,8 @@ function Index() {
               </label>)}
             </div>
             <div className="surface-actions">
-              <button className="share-button" onClick={() => { setQuiz(true); setQuestion(0); setAnswers([]); setDone(false); }}><Waves size={15}/> Fazer o quiz</button>\n              <button className="share-button" onClick={() => void share()}><Copy size={15}/>{copied ? "Mensagem copiada" : "Compartilhar compromisso"}</button>
+              <button className="share-button" onClick={() => { setQuiz(true); setQuestion(0); setAnswers([]); setDone(false); }}><Waves size={15}/> Fazer o quiz</button>
+              <button className="share-button" onClick={() => void share()}><Copy size={15}/>{copied ? "Mensagem copiada" : "Compartilhar compromisso"}</button>
               <button className="back-button" onClick={() => { setStep(0); setSurface(false); }}><ArrowLeft size={15}/> Revisitar o diário</button>
             </div>
           </section>
@@ -429,7 +436,20 @@ function Index() {
         .custom-check { display:grid; place-items:center; flex:0 0 19px; width:19px;height:19px; border:1px solid color-mix(in srgb,var(--muted) 55%,transparent); color:transparent; transition:all .2s; }
         .check-row.checked .custom-check { background:var(--teal); border-color:var(--teal); color:white; }
         .check-row.checked > span:last-child { color:var(--muted); text-decoration:line-through; text-decoration-color:var(--coral); }
-        .quiz-panel { margin:28px 0; padding:clamp(20px,4vw,34px); border:1px solid color-mix(in srgb,var(--muted) 28%,transparent); background:color-mix(in srgb,var(--paper) 90%,white 10%); }\n        .quiz-progress { height:3px; margin:18px 0 28px; background:color-mix(in srgb,var(--muted) 20%,transparent); }\n        .quiz-progress span { display:block; height:100%; background:var(--coral); transition:width .3s ease; }\n        .quiz-panel h2 { font:400 clamp(25px,4vw,38px)/1.15 var(--serif); margin:0 0 22px; }\n        .quiz-answer { display:flex; align-items:center; gap:13px; width:100%; padding:15px; margin:9px 0; text-align:left; border:1px solid color-mix(in srgb,var(--muted) 28%,transparent); background:transparent; color:var(--ink); font-size:13px; line-height:1.5; }\n        .quiz-answer.selected { border-color:var(--teal); background:color-mix(in srgb,var(--teal) 9%,var(--paper)); }\n        .quiz-letter { display:grid; place-items:center; flex:0 0 28px; width:28px; height:28px; border:1px solid color-mix(in srgb,var(--muted) 30%,transparent); border-radius:50%; font:10px var(--mono); }\n        .quiz-answer.selected .quiz-letter { background:var(--teal); color:white; }\n        .quiz-result { text-align:center; padding:18px 0; }\n        .quiz-score { display:block; font:400 clamp(72px,12vw,110px)/1 var(--serif); color:var(--teal); }\n        .quiz-score small { font-size:24px; color:var(--muted); }\n        .quiz-result h2 { margin:20px 0 10px; }\n        .quiz-result p { color:var(--muted); line-height:1.7; margin-bottom:28px; }\n        .share-button:disabled { opacity:.45; cursor:not-allowed; }\n        .surface-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+        .quiz-panel { margin:28px 0; padding:clamp(20px,4vw,34px); border:1px solid color-mix(in srgb,var(--muted) 28%,transparent); background:color-mix(in srgb,var(--paper) 90%,white 10%); }
+        .quiz-progress { height:3px; margin:18px 0 28px; background:color-mix(in srgb,var(--muted) 20%,transparent); }
+        .quiz-progress span { display:block; height:100%; background:var(--coral); transition:width .3s ease; }
+        .quiz-panel h2 { font:400 clamp(25px,4vw,38px)/1.15 var(--serif); margin:0 0 22px; }
+        .quiz-answer { display:flex; align-items:center; gap:13px; width:100%; padding:15px; margin:9px 0; text-align:left; border:1px solid color-mix(in srgb,var(--muted) 28%,transparent); background:transparent; color:var(--ink); font-size:13px; line-height:1.5; }
+        .quiz-answer.selected { border-color:var(--teal); background:color-mix(in srgb,var(--teal) 9%,var(--paper)); }
+        .quiz-letter { display:grid; place-items:center; flex:0 0 28px; width:28px; height:28px; border:1px solid color-mix(in srgb,var(--muted) 30%,transparent); border-radius:50%; font:10px var(--mono); }
+        .quiz-answer.selected .quiz-letter { background:var(--teal); color:white; }
+        .quiz-result { text-align:center; padding:18px 0; }
+        .quiz-score { display:block; font:400 clamp(72px,12vw,110px)/1 var(--serif); color:var(--teal); }
+        .quiz-score small { font-size:24px; color:var(--muted); }
+        .quiz-result h2 { margin:20px 0 10px; }
+        .quiz-result p { color:var(--muted); line-height:1.7; margin-bottom:28px; }
+        .share-button:disabled { opacity:.45; cursor:not-allowed; }\n        .surface-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
         .share-button { background:var(--abissal); }
         .share-button:hover { background:var(--teal); }
         .surface-screen .depth-ruler { opacity:.45; }
