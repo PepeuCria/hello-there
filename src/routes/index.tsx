@@ -90,7 +90,7 @@ function Index() {
         .mar .shell { width:min(820px,calc(100% - 36px)); margin:0 auto; padding-bottom:88px; }
         .mar .topbar { height:76px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #D7E8E4; }
         .mar .brand { display:flex; align-items:center; gap:10px; color:#082F3A; text-decoration:none; font:800 17px 'Manrope',sans-serif; letter-spacing:-.06em; }
-        .mar .brand-icon { display:grid; place-items:center; width:34px; height:34px; border-radius:12px; background:#126E75; color:#FAFCF9; }
+        .mar .brand-logo { display:block; width:42px; height:42px; object-fit:contain; flex:0 0 auto; }
         .mar .top-note { font-size:11px; color:#52777A; }
         .mar .intro { padding:58px 0 26px; text-align:center; }
         .mar .eyebrow { display:inline-flex; gap:8px; align-items:center; color:#126E75; font-size:10px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
@@ -141,7 +141,7 @@ function Index() {
       <div className="shell">
         <header className="topbar">
           <a className="brand" href="/" aria-label="Mar Sem Marcas">
-            <span className="brand-icon"><Waves size={19}/></span>
+            <img className="brand-logo" src="/public/images/Emblema%20M%C3%A9dico%20com%20Ondas%20e%20Asas.png" alt="Logo Mar Sem Marcas" />
             <span>mar sem marcas<span style={{color:"#50B9AD"}}>.</span></span>
           </a>
         </header>
