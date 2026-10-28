@@ -195,7 +195,7 @@ function Index() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          topic: problems.map((problem) => problem.plainTitle + ": " + problem.text).join("\\n"),
+          topic: problems.map((problem) => problem.plainTitle + ": " + problem.text).join("\n"),
           count: 10,
         }),
       });
