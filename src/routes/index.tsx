@@ -91,8 +91,8 @@ function Index() {
         .mar .problem-symbol { display:grid; place-items:center; width:47px; height:47px; border-radius:16px; background:#e5f3ed; color:#16838a; }
         .mar .problem-card h2 { max-width:610px; font-size:clamp(27px,4.5vw,40px); line-height:1.13; margin:22px 0 12px; }
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#617b7e; }
-        .mar .illustration-area { position:relative; height:clamp(280px,44vw,430px); margin:18px -24px 0; overflow:hidden; border-radius:0; background:transparent; isolation:isolate; -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 13%, #000 82%, transparent 100%); mask-image:linear-gradient(to bottom, transparent 0%, #000 13%, #000 82%, transparent 100%); }
-        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:cover; object-position:center; animation:arrive .8s cubic-bezier(.16,1,.3,1) both; -webkit-mask-image:linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%); mask-image:linear-gradient(to right, transparent 0%, #000 13%, #000 87%, transparent 100%); }
+        .mar .illustration-area { position:relative; margin:18px -24px 0; overflow:visible; border-radius:0; background:transparent; isolation:isolate; -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); }
+        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:auto; max-width:100%; object-fit:contain; object-position:center; animation:arrive .8s cubic-bezier(.16,1,.3,1) both; }
         .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; z-index:0; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #c4e1d9; opacity:.7; }
         .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #c4e1d9, 0 -25px 0 -24px #c4e1d9, 0 -38px 0 -37px #c4e1d9; }
         .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
@@ -117,7 +117,7 @@ function Index() {
         .mar .score { margin:10px 0; color:#12828a; font:800 50px 'Manrope',sans-serif; letter-spacing:-.06em; }
         .mar .result p { color:#668084; font-size:13px; line-height:1.8; }
         .mar .footer { padding:22px 0 30px; text-align:center; color:#9aacab; font-size:10px; }
-        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { height:235px; margin-top:18px; border-radius:0; background:transparent; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
+        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { height:auto; margin-top:18px; border-radius:0; background:transparent; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
         @media(prefers-reduced-motion:reduce) { .mar *, .mar *:before, .mar *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
       `}</style>
 
