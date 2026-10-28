@@ -96,7 +96,7 @@ function Index() {
         .mar .shell { width:min(820px,calc(100% - 36px)); margin:0 auto; padding-bottom:88px; }
         .mar .topbar { min-height:94px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #D7E8E4; padding:10px 2px; }
         .mar .brand { display:flex; align-items:center; gap:12px; color:#082F3A; text-decoration:none; font:800 20px/1 'Manrope',sans-serif; letter-spacing:-.045em; }
-        .mar .brand-logo { display:block; width:56px; height:56px; object-fit:contain; flex:0 0 auto; }
+        .mar .brand-logo { display:block; width:60px; height:60px; object-fit:contain; flex:0 0 auto; }
         .mar .brand-wordmark { display:flex; flex-direction:column; justify-content:center; gap:4px; }
         .mar .brand-name { display:block; white-space:nowrap; }
         .mar .brand-name span { color:#50B9AD; }
@@ -146,7 +146,7 @@ function Index() {
         @media(max-width:560px) {
           .mar .topbar { min-height:80px; padding:8px 0; }
           .mar .brand { gap:9px; font-size:17px; }
-          .mar .brand-logo { width:48px; height:48px; }
+          .mar .brand-logo { width:50px; height:50px; }
           .mar .brand-caption { font-size:8px; letter-spacing:.12em; }
           .mar .intro { padding:43px 0 20px; }
           .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; }
@@ -163,7 +163,7 @@ function Index() {
       <div className="shell">
         <header className="topbar">
           <a className="brand" href="/" aria-label="Mar Sem Marcas">
-            <img className="brand-logo" src="/public/images/Emblema%20M%C3%A9dico%20Teal%20com%20Ondas.png" alt="Logo Mar Sem Marcas" />
+            <img className="brand-logo" src="/public/images/Emblema%20M%C3%A9dico%20Teal%20com%20Ondas.png?v=2" alt="Logo Mar Sem Marcas" />
             <span className="brand-wordmark">
               <span className="brand-name">mar sem marcas<span>.</span></span>
               <span className="brand-caption">Preservar é deixar livre</span>
