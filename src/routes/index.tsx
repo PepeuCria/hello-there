@@ -147,7 +147,6 @@ function Index() {
             <span className="brand-icon"><Waves size={19}/></span>
             <span>mar sem marcas<span style={{color:"#168b91"}}>.</span></span>
           </a>
-          <span className="top-note">Conhecimento que protege o oceano</span>
         </header>
 
         {screen === "problems" ? <>
