@@ -12,74 +12,92 @@ export const Route = createFileRoute("/api/generate-quiz")({
     handlers: {
       POST: async ({ request }) => {
         try {
-          const apiKey = process.env.OPENAI_API_KEY;
+          const apiKey = process.env["LOVABLE_API_KEY"];
           if (!apiKey) {
-            return Response.json(
-              { error: "A chave OPENAI_API_KEY não está configurada no servidor." },
-              { status: 503 },
-            );
+            return Response.json({ error: "A IA não está configurada no servidor." }, { status: 503 });
           }
 
           const body = (await request.json()) as { topic?: string; count?: number };
           const topic = typeof body.topic === "string" ? body.topic.slice(0, 300) : "preservação dos oceanos";
           const count = Math.min(10, Math.max(5, Number(body.count) || 10));
 
-          const aiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+          const schema = {
+            type: "object",
+            additionalProperties: false,
+            required: ["questions"],
+            properties: {
+              questions: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  required: ["q", "a", "correct", "why"],
+                  properties: {
+                    q: { type: "string" },
+                    a: { type: "array", items: { type: "string" } },
+                    correct: { type: "integer" },
+                    why: { type: "string" },
+                  },
+                },
+              },
+            },
+          };
+
+          const aiResponse = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${apiKey}`,
+              "Lovable-API-Key": apiKey,
+              "X-Lovable-AIG-SDK": "fetch",
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              model: process.env.OPENAI_MODEL || "gpt-4o-mini",
-              temperature: 0.8,
-              response_format: { type: "json_object" },
-              messages: [
-                {
-                  role: "system",
-                  content:
-                    "Você cria quizzes educativos em português brasileiro. Retorne apenas um objeto JSON com a propriedade questions, um array de objetos com os campos q (string), a (array com quatro strings), correct (índice numérico de 0 a 3) e why (string). Cada questão deve ter exatamente quatro alternativas plausíveis, uma única correta e uma explicação curta e factual. Varie os temas e não repita perguntas.",
-                },
-                {
-                  role: "user",
-                  content: `Crie exatamente ${count} perguntas de múltipla escolha, adequadas para estudantes, sobre: ${topic}. Priorize preservação marinha, mergulho responsável, biodiversidade, poluição e atitudes práticas. Não repita as perguntas do quiz comum; crie questões novas. A propriedade correct é o índice (0–3) da única alternativa correta.`,
-                },
-              ],
+              model: "openai/gpt-6-astra",
+              stream: true,
+              store: false,
+              reasoning: { effort: "low" },
+              text: { format: { type: "json_schema", name: "quiz", strict: true, schema } },
+              instructions:
+                "Você cria quizzes educativos em português brasileiro. Cada questão deve ter exatamente quatro alternativas plausíveis em 'a', uma única correta indicada por 'correct' (índice 0 a 3) e uma explicação curta e factual em 'why'. Varie os temas e não repita perguntas.",
+              input: `Crie exatamente ${count} perguntas de múltipla escolha, adequadas para estudantes, sobre: ${topic}. Priorize preservação marinha, mergulho responsável, biodiversidade, poluição e atitudes práticas.`,
             }),
           });
 
-          if (!aiResponse.ok) {
+          if (!aiResponse.ok || !aiResponse.body) {
             const details = await aiResponse.text();
-            console.error("OpenAI quiz error:", aiResponse.status, details);
-
-            // Return a useful, safe message to the interface without exposing API response details.
-            if (aiResponse.status === 401 || aiResponse.status === 403) {
-              return Response.json(
-                { error: "A chave da OpenAI está inválida ou sem permissão. Confira o segredo OPENAI_API_KEY no ambiente publicado." },
-                { status: 502 },
-              );
-            }
+            console.error("AI quiz error:", aiResponse.status, details);
             if (aiResponse.status === 429) {
-              return Response.json(
-                { error: "A OpenAI recusou a solicitação por limite ou falta de créditos. Confira o uso e o faturamento da sua conta da API." },
-                { status: 502 },
-              );
+              return Response.json({ error: "Muitas solicitações agora. Aguarde um pouco e tente novamente." }, { status: 429 });
             }
-            if (aiResponse.status === 404) {
-              return Response.json(
-                { error: "O modelo de IA configurado não foi encontrado. Remova OPENAI_MODEL ou defina um modelo disponível, como gpt-4o-mini." },
-                { status: 502 },
-              );
+            if (aiResponse.status === 402) {
+              return Response.json({ error: "Os créditos de IA acabaram. Adicione créditos ao workspace." }, { status: 402 });
             }
-            return Response.json(
-              { error: "A OpenAI respondeu com erro. Tente novamente; se continuar, confira os logs do servidor para ver o código exato." },
-              { status: 502 },
-            );
+            return Response.json({ error: "A IA respondeu com erro. Tente novamente." }, { status: 502 });
           }
 
-          const data = await aiResponse.json();
-          const content = data.choices?.[0]?.message?.content;
-          if (typeof content !== "string") {
+          // Read the streamed response and collect the final text.
+          const reader = aiResponse.body.getReader();
+          const decoder = new TextDecoder();
+          let buffer = "";
+          let content = "";
+          for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              if (!line.startsWith("data:")) continue;
+              const data = line.slice(5).trim();
+              if (!data || data === "[DONE]") continue;
+              try {
+                const evt = JSON.parse(data);
+                if (evt.type === "response.output_text.delta") content += evt.delta ?? "";
+              } catch {
+                /* ignore partial */
+              }
+            }
+          }
+          if (!content) {
             return Response.json({ error: "A IA retornou uma resposta vazia." }, { status: 502 });
           }
 

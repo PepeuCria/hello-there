@@ -158,10 +158,10 @@ function Index() {
               <span className="problem-number">{step + 1}</span>
               <span className="problem-symbol">{step===0?<Waves size={23}/>:step===1?<Recycle size={23}/>:step===2?<Fish size={23}/>:step===3?<ShieldCheck size={23}/>:<Leaf size={23}/>}</span>
             </div>
-            <h2>{problems[step].title}</h2>
-            <p>{problems[step].text}</p>
+            <h2>{problems[step]!.title}</h2>
+            <p>{problems[step]!.text}</p>
             <div className="illustration-area">
-              <img className="illustration-image" src={problems[step].image} alt={problems[step].imageAlt} loading="eager" />
+              <img className="illustration-image" src={problems[step]!.image} alt={problems[step]!.imageAlt} loading="eager" />
             </div>
           </article>
           <div className="actions">
@@ -180,8 +180,8 @@ function Index() {
             {quizLoading ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Preparando seu quiz...</h2><p>A IA está criando perguntas novas sobre a preservação dos oceanos.</p></div> : quizError ? <div className="result"><div className="result-icon"><Waves size={30}/></div><h2>Não foi possível conectar à IA</h2><p>{quizError}</p><button className="primary" onClick={()=>void startQuiz()}><RotateCcw size={15}/> Tentar novamente</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setQuizQuestions(questions);setQuizError("");setQuestion(0);setAnswers([]);setDone(false)}}>Usar quiz de reserva</button></div></div> : !done ? <>
               <div className="quiz-heading"><span>PERGUNTA {String(question+1).padStart(2,"0")} / {quizQuestions.length}</span><span>{answers.filter(a=>a!==undefined).length} respondidas · IA</span></div>
               <div className="progress" style={{marginBottom:24}}><span style={{width:(((question+1)/quizQuestions.length)*100)+"%"}}/></div>
-              <h2>{quizQuestions[question].q}</h2>
-              {quizQuestions[question].a.map((answer,i)=><button key={answer} className={"answer"+(answers[question]===i?" selected":"")} onClick={()=>selectAnswer(i)}><span className="letter">{String.fromCharCode(65+i)}</span><span>{answer}</span>{answers[question]===i&&<Check size={15} style={{marginLeft:"auto",flexShrink:0}}/>}</button>)}
+              <h2>{quizQuestions[question]!.q}</h2>
+              {quizQuestions[question]!.a.map((answer,i)=><button key={answer} className={"answer"+(answers[question]===i?" selected":"")} onClick={()=>selectAnswer(i)}><span className="letter">{String.fromCharCode(65+i)}</span><span>{answer}</span>{answers[question]===i&&<Check size={15} style={{marginLeft:"auto",flexShrink:0}}/>}</button>)}
               <div className="quiz-bottom"><button className="subtle" onClick={()=>setScreen("problems")}>Voltar aos problemas</button><button className="primary" disabled={answers[question]===undefined} onClick={nextQuestion}>{question===quizQuestions.length-1?"Ver resultado":"Próxima pergunta"} <ChevronRight size={15}/></button></div>
             </> : <div className="result"><div className="result-icon">{score>=8?<CheckCircle2 size={30}/>:<Waves size={30}/>}</div><span className="eyebrow">{score>=8?"Meta atingida":"Continue aprendendo"}</span><h2>{score>=8?"Mandou bem!":"Vamos tentar de novo?"}</h2><div className="score">{score}<span style={{fontSize:20,color:"#819b9b"}}>/10</span></div><p>{score>=8?"Você acertou pelo menos oito perguntas. Leve esse cuidado para cada mergulho.":"Você precisa de 8 acertos para atingir a meta. Revise os temas e tente novamente."}</p><button className="primary" onClick={resetQuiz}><RotateCcw size={15}/> Refazer o quiz</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setScreen("problems");setStep(0);setAnimKey(k=>k+1)}}>Voltar aos problemas</button></div></div>}
           </div>
