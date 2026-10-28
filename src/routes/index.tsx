@@ -112,9 +112,6 @@ function Index() {
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#52777A; }
         .mar .illustration-area { position:relative; width:100%; margin:18px 0 0; overflow:visible; border-radius:0; background:transparent; isolation:isolate; -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); mask-image:linear-gradient(to bottom, #000 0%, #000 82%, transparent 100%); }
         .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:auto; max-width:100%; object-fit:contain; object-position:center; animation:arrive .8s cubic-bezier(.16,1,.3,1) both; }
-        .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; z-index:0; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #A9DCD4; opacity:.7; }
-        .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #A9DCD4, 0 -25px 0 -24px #A9DCD4, 0 -38px 0 -37px #A9DCD4; }
-        .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
         .mar .actions { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:20px 2px 0; }
         .mar .subtle { border:1px solid #C7DCD7; background:#FFFFFF; color:#126E75; font-size:12px; padding:13px 18px; border-radius:999px; transition:background .2s,border-color .2s; }
         .mar .subtle:hover { background:#E8F4EF; border-color:#50B9AD; }
