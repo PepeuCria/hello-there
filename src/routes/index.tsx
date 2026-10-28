@@ -78,18 +78,21 @@ function Index() {
         .mar h1,.mar h2,.mar h3 { font-family:'Manrope',sans-serif; letter-spacing:-.055em; }
         .mar .intro h1 { font-size:clamp(36px,6vw,58px); line-height:1.06; margin:15px 0 14px; }
         .mar .intro p { max-width:500px; margin:0 auto; font-size:14px; line-height:1.8; color:#648084; }
-        .mar .progress-wrap { margin:28px 0 14px; }
+        .mar .problem-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 0 14px; color:#527579; font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; }
+        .mar .progress-wrap { margin:0; }
         .mar .progress-label { display:flex; justify-content:space-between; gap:12px; margin-bottom:9px; color:#7b9393; font-size:10px; font-weight:700; }
         .mar .progress { height:4px; border-radius:20px; background:#e2ece6; overflow:hidden; }
-        .mar .progress span { display:block; height:100%; border-radius:20px; background:#13858b; transition:width .4s ease; }
-        .mar .problem-card { position:relative; min-height:300px; padding:clamp(25px,5vw,48px); border:1px solid #e1eae4; border-radius:27px; background:#fffefa; box-shadow:0 16px 50px #164a5010; animation:arrive .38s cubic-bezier(.2,.8,.2,1) both; }
+        .mar .progress span { display:block; height:100%; border-radius:20px; background:#13858b; transition:width .55s cubic-bezier(.2,.8,.2,1); }
+        .mar .problem-card { position:relative; overflow:hidden; min-height:650px; padding:clamp(25px,5vw,48px); border:1px solid #e1eae4; border-top:0; border-radius:0 0 27px 27px; background:#fffefa; box-shadow:0 16px 50px #164a5010; animation:problemEnter .55s cubic-bezier(.2,.8,.2,1) both; }
+        @keyframes problemEnter { from { opacity:0; transform:translateY(22px); clip-path:inset(8% 0 0); } to { opacity:1; transform:translateY(0); clip-path:inset(0 0 0); } }
         @keyframes arrive { from { opacity:0; transform:translateY(13px) scale(.99); } to { opacity:1; transform:translateY(0) scale(1); } }
         .mar .problem-top { display:flex; justify-content:space-between; align-items:center; }
-        .mar .problem-number { font:800 11px 'Manrope',sans-serif; color:#8da5a4; letter-spacing:.1em; }
+        .mar .problem-number { font:800 clamp(70px,12vw,112px)/.9 'Manrope',sans-serif; color:#0a6572; letter-spacing:-.09em; }
         .mar .problem-symbol { display:grid; place-items:center; width:47px; height:47px; border-radius:16px; background:#e5f3ed; color:#16838a; }
-        .mar .problem-card h2 { max-width:610px; font-size:clamp(28px,4.8vw,42px); line-height:1.13; margin:28px 0 14px; }
+        .mar .problem-card h2 { max-width:610px; font-size:clamp(27px,4.5vw,40px); line-height:1.13; margin:22px 0 12px; }
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#617b7e; }
-        .mar .illustration-area { position:relative; height:clamp(150px,28vw,230px); margin:24px -8px -8px; overflow:hidden; border-radius:18px; background:linear-gradient(180deg, #fffefa 0%, #f3f8f3 70%, #e8f4ef 100%); }
+        .mar .illustration-area { position:relative; height:clamp(240px,38vw,350px); margin:30px 0 0; overflow:hidden; border-radius:25px; background:linear-gradient(180deg, #f7faf6 0%, #eef6f0 65%, #dcefe8 100%); }
+        .mar .illustration-label { position:absolute; top:16px; left:18px; color:#8ba9a4; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
         .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #c4e1d9; opacity:.7; }
         .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #c4e1d9, 0 -25px 0 -24px #c4e1d9, 0 -38px 0 -37px #c4e1d9; }
         .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
@@ -114,7 +117,7 @@ function Index() {
         .mar .score { margin:10px 0; color:#12828a; font:800 50px 'Manrope',sans-serif; letter-spacing:-.06em; }
         .mar .result p { color:#668084; font-size:13px; line-height:1.8; }
         .mar .footer { padding:22px 0 30px; text-align:center; color:#9aacab; font-size:10px; }
-        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:320px; border-radius:22px; } .mar .problem-card h2 { margin-top:23px; } .mar .problem-card p { font-size:14px; } .mar .illustration-area { height:170px; margin-top:20px; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
+        @media(max-width:560px) { .mar .topbar { height:67px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:25px 22px; border-radius:0 0 22px 22px; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { height:235px; margin-top:22px; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
         @media(prefers-reduced-motion:reduce) { .mar *, .mar *:before, .mar *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
       `}</style>
 
@@ -133,18 +136,16 @@ function Index() {
             <h1>O oceano precisa<br/>da nossa atenção.</h1>
             <p>Conheça cinco problemas que afetam o mar. Leia cada um no seu ritmo e avance para o próximo.</p>
           </section>
-          <div className="progress-wrap">
-            <div className="progress-label"><span>PROBLEMAS DO OCEANO</span><span>{String(step + 1).padStart(2,"0")} / 05</span></div>
-            <div className="progress"><span style={{width:(((step+1)/problems.length)*100)+"%"}}/></div>
-          </div>
+          <div className="problem-heading"><span>Problemas do oceano</span><span>{String(step + 1).padStart(2,"0")} / 05</span></div>
+          <div className="progress-wrap"><div className="progress"><span style={{width:(((step+1)/problems.length)*100)+"%"}}/></div></div>
           <article className="problem-card" key={animKey}>
             <div className="problem-top">
-              <span className="problem-number">PROBLEMA {String(step + 1).padStart(2,"0")}</span>
+              <span className="problem-number">{step + 1}</span>
               <span className="problem-symbol">{step===0?<Waves size={23}/>:step===1?<Recycle size={23}/>:step===2?<Fish size={23}/>:step===3?<ShieldCheck size={23}/>:<Leaf size={23}/>}</span>
             </div>
             <h2>{problems[step].title}</h2>
             <p>{problems[step].text}</p>
-            <div className="illustration-area" aria-label="Área reservada para a ilustração deste problema" />
+            <div className="illustration-area" aria-label="Área reservada para a ilustração deste problema"><span className="illustration-label">Ilustração</span></div>
           </article>
           <div className="actions">
             <button className="subtle" onClick={()=>moveTo(Math.max(0,step-1))} style={{visibility:step===0?"hidden":"visible"}}>← Voltar</button>
