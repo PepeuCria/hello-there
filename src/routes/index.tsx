@@ -5,11 +5,11 @@ import { ArrowRight, ChevronRight, Waves, Leaf, Fish, Recycle, ShieldCheck, Chec
 export const Route = createFileRoute("/")({ component: Index });
 
 const problems = [
-  { title: "Não toque nos corais nem nos animais", text: "Muitos corais crescem apenas cerca de 1 cm por ano. Ao tocar ou quebrar um coral, um mergulhador pode danificar anos de crescimento. O contato também pode ferir ou estressar outros animais marinhos." },
-  { title: "Não alimente os peixes", text: "Quando recebem alimento de mergulhadores, os peixes podem mudar seus hábitos naturais de alimentação. Isso interfere em seu papel no ecossistema e pode desequilibrar a cadeia alimentar." },
-  { title: "Mantenha as nadadeiras longe do fundo", text: "Ao bater as nadadeiras no solo, o mergulhador levanta areia e sedimentos. Essas partículas podem cobrir organismos marinhos, prejudicar alguns habitats e reduzir a entrada de luz na água." },
-  { title: "Controle a sua flutuabilidade", text: "Ajustar corretamente o colete equilibrador e o lastro ajuda a manter a estabilidade durante o mergulho. Sem esse controle, o mergulhador pode colidir com o fundo, quebrar corais e danificar habitats essenciais à vida marinha." },
-  { title: "Não toque nos naufrágios", text: "O contato frequente pode acelerar a degradação dos naufrágios. Essas estruturas também servem de abrigo e fixação para organismos marinhos; tocá-los pode danificar esses seres e perturbar seus habitats." },
+  { title: "Não toque nos corais nem nos animais", text: "Muitos corais crescem apenas cerca de 1 cm por ano. Ao tocar ou quebrar um coral, um mergulhador pode danificar anos de crescimento. O contato também pode ferir ou estressar outros animais marinhos.", image: "/public/images/Mergulho consciente_ não toque nos corais.png", imageAlt: "Mergulho consciente: mantenha distância dos corais" },
+  { title: "Não alimente os peixes", text: "Quando recebem alimento de mergulhadores, os peixes podem mudar seus hábitos naturais de alimentação. Isso interfere em seu papel no ecossistema e pode desequilibrar a cadeia alimentar.", image: "/public/images/Não alimente os peixes marinhos.png", imageAlt: "Peixes marinhos que devem ser observados sem serem alimentados" },
+  { title: "Mantenha as nadadeiras longe do fundo", text: "Ao bater as nadadeiras no solo, o mergulhador levanta areia e sedimentos. Essas partículas podem cobrir organismos marinhos, prejudicar alguns habitats e reduzir a entrada de luz na água.", image: "/public/images/Não perturbe o fundo do mar.png", imageAlt: "Proteção do fundo do mar contra sedimentos levantados pelas nadadeiras" },
+  { title: "Controle a sua flutuabilidade", text: "Ajustar corretamente o colete equilibrador e o lastro ajuda a manter a estabilidade durante o mergulho. Sem esse controle, o mergulhador pode colidir com o fundo, quebrar corais e danificar habitats essenciais à vida marinha.", image: "/public/images/Flutuabilidade correta_ proteja o fundo do mar.png", imageAlt: "Mergulhador mantendo a flutuabilidade correta" },
+  { title: "Não toque nos naufrágios", text: "O contato frequente pode acelerar a degradação dos naufrágios. Essas estruturas também servem de abrigo e fixação para organismos marinhos; tocá-los pode danificar esses seres e perturbar seus habitats.", image: "/public/images/Não Toque no Naufrágio Corroído.png", imageAlt: "Naufrágio marinho que deve ser preservado sem contato" },
 ];
 
 const questions = [
@@ -91,9 +91,10 @@ function Index() {
         .mar .problem-symbol { display:grid; place-items:center; width:47px; height:47px; border-radius:16px; background:#e5f3ed; color:#16838a; }
         .mar .problem-card h2 { max-width:610px; font-size:clamp(27px,4.5vw,40px); line-height:1.13; margin:22px 0 12px; }
         .mar .problem-card p { max-width:620px; margin:0; font-size:15px; line-height:1.9; color:#617b7e; }
-        .mar .illustration-area { position:relative; height:clamp(240px,38vw,350px); margin:22px 0 0; overflow:hidden; border-radius:0; background:transparent; }
-        .mar .illustration-label { position:absolute; top:16px; left:0; color:#8ba9a4; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
-        .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #c4e1d9; opacity:.7; }
+        .mar .illustration-area { position:relative; height:clamp(260px,42vw,390px); margin:18px 0 0; overflow:hidden; border-radius:0; background:transparent; isolation:isolate; }
+        .mar .illustration-image { position:relative; z-index:1; display:block; width:100%; height:100%; object-fit:contain; object-position:center; animation:arrive .8s cubic-bezier(.16,1,.3,1) both; }
+        .mar .illustration-label { position:absolute; z-index:2; top:14px; left:0; color:#8ba9a4; font-size:10px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; pointer-events:none; }
+        .mar .illustration-area:before, .mar .illustration-area:after { content:""; position:absolute; z-index:0; left:-8%; width:116%; height:95px; border-radius:50%; border:1px solid #c4e1d9; opacity:.7; }
         .mar .illustration-area:before { bottom:-46px; transform:rotate(-4deg); box-shadow:0 -12px 0 -11px #c4e1d9, 0 -25px 0 -24px #c4e1d9, 0 -38px 0 -37px #c4e1d9; }
         .mar .illustration-area:after { bottom:-62px; left:-12%; transform:rotate(5deg); opacity:.45; }
         .mar .actions { display:flex; justify-content:space-between; align-items:center; gap:14px; padding:20px 2px 0; }
@@ -140,7 +141,10 @@ function Index() {
             </div>
             <h2>{problems[step].title}</h2>
             <p>{problems[step].text}</p>
-            <div className="illustration-area" aria-label="Área reservada para a ilustração deste problema"><span className="illustration-label">Ilustração</span></div>
+            <div className="illustration-area">
+              <span className="illustration-label">Preserve o oceano</span>
+              <img className="illustration-image" src={problems[step].image} alt={problems[step].imageAlt} loading="eager" />
+            </div>
           </article>
           <div className="actions">
             <button className="subtle" onClick={()=>moveTo(Math.max(0,step-1))} style={{visibility:step===0?"hidden":"visible"}}>← Voltar</button>
