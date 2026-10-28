@@ -449,7 +449,8 @@ function Index() {
         .quiz-score small { font-size:24px; color:var(--muted); }
         .quiz-result h2 { margin:20px 0 10px; }
         .quiz-result p { color:var(--muted); line-height:1.7; margin-bottom:28px; }
-        .share-button:disabled { opacity:.45; cursor:not-allowed; }\n        .surface-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+        .share-button:disabled { opacity:.45; cursor:not-allowed; }
+        .surface-actions { display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
         .share-button { background:var(--abissal); }
         .share-button:hover { background:var(--teal); }
         .surface-screen .depth-ruler { opacity:.45; }
