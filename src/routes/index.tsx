@@ -86,12 +86,21 @@ function Index() {
         * { box-sizing:border-box; }
         body { margin:0; background:#FAFCF9; }
         .mar { min-height:100vh; background:#FAFCF9; color:#082F3A; font-family:'DM Sans',sans-serif; }
-        .mar button { font:inherit; cursor:pointer; }\n        .mar button:focus-visible { outline:3px solid #50B9AD; outline-offset:3px; }\n        .mar .primary:hover:not(:disabled) { background:#082F3A; transform:translateY(-1px); }\n        .mar .subtle:hover:not(:disabled) { background:#E8F4EF; border-color:#50B9AD; }\n        .mar button:disabled { cursor:not-allowed; opacity:.55; }\n        .mar .answer.selected { border-color:#126E75; background:#E8F4EF; color:#082F3A; }\n        .mar .answer:hover:not(.selected) { border-color:#50B9AD; background:#FAFCF9; }
+        .mar button { font:inherit; cursor:pointer; }
+        .mar button:focus-visible { outline:3px solid #50B9AD; outline-offset:3px; }
+        .mar .primary:hover:not(:disabled) { background:#082F3A; transform:translateY(-1px); }
+        .mar .subtle:hover:not(:disabled) { background:#E8F4EF; border-color:#50B9AD; }
+        .mar button:disabled { cursor:not-allowed; opacity:.55; }
+        .mar .answer.selected { border-color:#126E75; background:#E8F4EF; color:#082F3A; }
+        .mar .answer:hover:not(.selected) { border-color:#50B9AD; background:#FAFCF9; }
         .mar .shell { width:min(820px,calc(100% - 36px)); margin:0 auto; padding-bottom:88px; }
         .mar .topbar { min-height:94px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #D7E8E4; padding:10px 2px; }
-        .mar .brand { display:flex; align-items:center; gap:14px; color:#082F3A; text-decoration:none; font:800 20px 'Manrope',sans-serif; letter-spacing:-.06em; }
-        .mar .brand-logo { display:block; width:58px; height:58px; object-fit:contain; flex:0 0 auto; }
-        .mar .top-note { font-size:11px; color:#52777A; }
+        .mar .brand { display:flex; align-items:center; gap:12px; color:#082F3A; text-decoration:none; font:800 20px/1 'Manrope',sans-serif; letter-spacing:-.045em; }
+        .mar .brand-logo { display:block; width:56px; height:56px; object-fit:contain; flex:0 0 auto; }
+        .mar .brand-wordmark { display:flex; flex-direction:column; justify-content:center; gap:4px; }
+        .mar .brand-name { display:block; white-space:nowrap; }
+        .mar .brand-name span { color:#50B9AD; }
+        .mar .brand-caption { color:#52777A; font:600 9px/1.2 'DM Sans',sans-serif; letter-spacing:.16em; text-transform:uppercase; }
         .mar .intro { padding:58px 0 26px; text-align:center; }
         .mar .eyebrow { display:inline-flex; gap:8px; align-items:center; color:#126E75; font-size:10px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; }
         .mar h1,.mar h2,.mar h3 { font-family:'Manrope',sans-serif; letter-spacing:-.055em; }
@@ -134,7 +143,20 @@ function Index() {
         .mar .result h2 { margin:0 0 12px; font-size:30px; }
         .mar .score { margin:10px 0; color:#126E75; font:800 50px 'Manrope',sans-serif; letter-spacing:-.06em; }
         .mar .result p { color:#52777A; font-size:13px; line-height:1.8; }
-                @media(max-width:560px) { .mar .topbar { min-height:80px; padding:8px 0; } .mar .brand { gap:10px; font-size:18px; } .mar .brand-logo { width:50px; height:50px; } .mar .top-note { max-width:115px; text-align:right; line-height:1.5; } .mar .intro { padding:43px 0 20px; } .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; } .mar .problem-card h2 { margin-top:18px; } .mar .problem-card p { font-size:14px; } .mar .problem-number { font-size:76px; } .mar .illustration-area { width:100%; height:auto; margin:18px 0 0; border-radius:0; background:transparent; } .mar .actions { align-items:stretch; } .mar .actions .primary { padding:13px 16px; } }
+        @media(max-width:560px) {
+          .mar .topbar { min-height:80px; padding:8px 0; }
+          .mar .brand { gap:9px; font-size:17px; }
+          .mar .brand-logo { width:48px; height:48px; }
+          .mar .brand-caption { font-size:8px; letter-spacing:.12em; }
+          .mar .intro { padding:43px 0 20px; }
+          .mar .problem-card { min-height:0; padding:18px 0 0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+          .mar .problem-card h2 { margin-top:18px; }
+          .mar .problem-card p { font-size:14px; }
+          .mar .problem-number { font-size:76px; }
+          .mar .illustration-area { width:100%; height:auto; margin:18px 0 0; border-radius:0; background:transparent; }
+          .mar .actions { align-items:stretch; }
+          .mar .actions .primary { padding:13px 16px; }
+        }
         @media(prefers-reduced-motion:reduce) { .mar *, .mar *:before, .mar *:after { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
       `}</style>
 
@@ -142,7 +164,10 @@ function Index() {
         <header className="topbar">
           <a className="brand" href="/" aria-label="Mar Sem Marcas">
             <img className="brand-logo" src="/public/images/Emblema%20M%C3%A9dico%20Teal%20com%20Ondas.png" alt="Logo Mar Sem Marcas" />
-            <span>mar sem marcas<span style={{color:"#50B9AD"}}>.</span></span>
+            <span className="brand-wordmark">
+              <span className="brand-name">mar sem marcas<span>.</span></span>
+              <span className="brand-caption">Preservar é deixar livre</span>
+            </span>
           </a>
         </header>
 
@@ -182,8 +207,6 @@ function Index() {
             </> : <div className="result"><div className="result-icon">{score>=8?<CheckCircle2 size={30}/>:<Waves size={30}/>}</div><span className="eyebrow">{score>=8?"Meta atingida":"Continue aprendendo"}</span><h2>{score>=8?"Mandou bem!":"Vamos tentar de novo?"}</h2><div className="score">{score}<span style={{fontSize:20,color:"#52777A"}}>/10</span></div><p>{score>=8?"Você acertou pelo menos oito perguntas. Leve esse cuidado para cada mergulho.":"Você precisa de 8 acertos para atingir a meta. Revise os temas e tente novamente."}</p><button className="primary" onClick={resetQuiz}><RotateCcw size={15}/> Refazer o quiz</button><div style={{marginTop:12}}><button className="subtle" onClick={()=>{setScreen("problems");setStep(0);setAnimKey(k=>k+1)}}>Voltar aos problemas</button></div></div>}
           </div>
         </>}
-
-        
       </div>
     </main>
   );
